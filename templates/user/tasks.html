@@ -1,0 +1,51 @@
+{% extends 'user/layout.html' %}
+
+{% block extra_head %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='tasks/style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='tasks/readability.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='tasks/portal-overrides.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='tasks/notes-ui.css') }}" />
+{% endblock %}
+
+{% block content %}
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">// PERSONAL PRODUCTIVITY OS v1.0</p>
+      <h1>Build your day.<br><em>Ship your goals.</em></h1>
+      <p class="intro">Workspace pribadi untuk memprioritaskan pekerjaan, mengelola fokus, dan terus bergerak maju.</p>
+      <div class="task-orbit" aria-hidden="true"><div class="orbit-glow"></div><div class="orbit-track track-one"></div><div class="orbit-track track-two"></div><div class="orbit-card orbit-card-one"><i></i><span></span><b></b></div><div class="orbit-card orbit-card-two"><i></i><span></span><b></b></div><div class="orbit-card orbit-card-three"><i></i><span></span><b></b></div><div class="orbit-pulse pulse-one"></div><div class="orbit-pulse pulse-two"></div></div>
+    </section>
+
+    <section class="overview" aria-label="Task overview">
+      <article class="metric-card total-metric" data-dashboard-filter="all" role="button" tabindex="0"><div class="metric-top"><span class="metric-label">01 / TOTAL TASKS</span><span class="metric-icon">#</span></div><strong id="totalCount">0</strong><small id="totalLabel">Total task dalam workspace</small><div class="metric-bar"><i></i></div></article>
+      <article class="metric-card complete-metric" data-dashboard-filter="completed" role="button" tabindex="0"><div class="metric-top"><span class="metric-label">02 / DEPLOYED</span><span class="metric-icon">✓</span></div><strong id="completedCount">0</strong><small id="completedLabel">Target berhasil diselesaikan</small><div class="metric-bar"><i></i></div></article>
+      <article class="metric-card active-metric" data-dashboard-filter="active" role="button" tabindex="0"><div class="metric-top"><span class="metric-label">03 / ACTIVE QUEUE</span><span class="metric-icon">↗</span></div><strong id="activeCount">0</strong><small id="activeLabel">Siap untuk dikerjakan</small><div class="metric-bar"><i></i></div></article>
+      <article class="metric-card deadline-metric" id="deadlineCard" data-dashboard-filter="deadline" role="button" tabindex="0"><div class="metric-top"><span class="metric-label">04 / DEADLINE</span><span class="metric-icon">!</span></div><strong id="todayCount">0</strong><small id="deadlineLabel">No deadlines or overdue tasks</small><div class="metric-bar"><i></i></div></article>
+      <article class="metric-card cancel-metric" data-dashboard-filter="canceled" role="button" tabindex="0"><div class="metric-top"><span class="metric-label">05 / CANCELED</span><span class="metric-icon">×</span></div><strong id="canceledCount">0</strong><small id="canceledLabel">No canceled tasks</small><div class="metric-bar"><i></i></div></article>
+    </section>
+
+    <section class="tasks-section">
+      <div class="section-head"><div><p class="eyebrow">// EXECUTION BOARD</p><h2>Task queue</h2><p id="taskSummary">Start by creating your first task.</p></div><div class="queue-controls" aria-label="Task actions"><button class="export-button" id="exportTasks"><span class="button-icon">↓</span> Export Excel</button><button class="add-button" id="openModal"><span class="button-icon">+</span> Add task</button></div></div>
+      <form class="task-filters" id="taskFilters"><input id="searchTasks" type="search" placeholder="Search tasks, notes, or categories..." aria-label="Search tasks"><label>From<input id="dateFrom" type="date" aria-label="Start date"></label><label>To<input id="dateTo" type="date" aria-label="End date"></label><button type="button" id="clearFilters">Reset</button></form>
+      <div class="task-list" id="taskList"></div>
+      <nav class="pagination" id="pagination" aria-label="Navigasi halaman task"></nav>
+      <div class="empty-state" id="emptyState"><div class="empty-icon">✓</div><h3>All clear.</h3><p>There are no tasks in this list.</p><button class="text-button" id="emptyAdd">+ Add a new task</button></div>
+    </section>
+    <footer><span class="footer-brand">PYTHONES — TO DO APP</span><i>•</i><span class="footer-focus">DIBUAT UNTUK FOKUS</span><span class="footer-release"><b>VERSION</b> {{ app_version }} <i>•</i> <b>UPDATED</b> {{ last_updated }}</span></footer>
+  </main>
+
+  <div class="modal-backdrop" id="modal"><form class="modal" id="taskForm"><div class="modal-top"><div><p class="eyebrow">NEW TASK</p><h2>Add a new focus</h2></div><button type="button" class="close" id="closeModal">×</button></div><label>Task title<input name="title" required maxlength="120" placeholder="For example, complete the proposal" autofocus></label><label>Notes <span class="optional">optional, up to 10,000 characters</span><textarea name="description" maxlength="10000" placeholder="Add any useful context" aria-describedby="notesCharacterCount"></textarea><small class="notes-character-count" id="notesCharacterCount">0 / 10,000 characters</small></label><div class="form-row"><label>Category<input name="category" value="Personal" maxlength="50"></label><label>Priority<select name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label></div><label>Due date <span class="optional">optional</span><input name="due_date" type="date"></label><div class="form-actions"><button type="button" class="cancel" id="cancelModal">Cancel</button><button class="save" type="submit">Save task <span>→</span></button></div></form></div>
+  <script>
+    // Tasks is an authenticated SEC_APP module, so retain its original API
+    // behavior while attaching the portal's CSRF token to write requests.
+    (() => { const token = "{{ csrf_token() }}"; const fetchNative = window.fetch.bind(window);
+      window.fetch = (input, init = {}) => { const method = (init.method || 'GET').toUpperCase();
+        if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) { const headers = new Headers(init.headers || {}); headers.set('X-CSRF-Token', token); init = {...init, headers}; }
+        return fetchNative(input, init); };
+    })();
+  </script>
+  <script src="{{ url_for('static', filename='tasks/tasks-ui.js') }}"></script>
+{% endblock %}

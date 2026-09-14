@@ -1,0 +1,476 @@
+/* ==========================================================
+   SEC_APP Enterprise UI Framework
+   sidebar.css
+========================================================== */
+
+
+/* ===========================================
+   SIDEBAR
+=========================================== */
+
+.sidebar{
+
+    width:220px;
+
+    min-width:220px;
+
+    max-width:220px;
+
+    height:100vh;
+
+    position:sticky;
+
+    top:0;
+
+    padding-right:0;
+
+    margin-right:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--bg-sidebar);
+
+    border-right:1px solid rgba(255,255,255,.08);
+
+    overflow:hidden;
+
+    flex-shrink:0;
+
+}
+
+
+/* ===========================================
+   SIDEBAR HEADER
+=========================================== */
+
+.sidebar-header{
+
+    padding:16px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.sidebar-profile{
+
+    padding:12px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+
+/* ===========================================
+   BRAND
+=========================================== */
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+.brand-text{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.brand-text h2{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    line-height:1.1;
+
+}
+
+.brand-text p{
+
+    margin-top:4px;
+
+    font-size:12px;
+
+    color:var(--text-muted);
+
+}
+
+.brand img{
+
+    width:48px;
+
+    height:48px;
+
+    object-fit:contain;
+
+    flex-shrink:0;
+
+}
+
+.brand h2{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin:0;
+
+}
+
+.brand p{
+
+    margin-top:2px;
+
+    font-size:12px;
+
+    color:var(--text-muted);
+
+}
+
+
+/* ===========================================
+   USER CARD
+=========================================== */
+
+.user-card{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
+
+    background:linear-gradient(
+        180deg,
+        rgba(255,255,255,.04),
+        rgba(255,255,255,.02)
+    );
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:14px 12px;
+
+}
+
+
+/* ===========================================
+   AVATAR
+=========================================== */
+
+.avatar{
+
+    width:46px;
+
+    height:46px;
+
+    margin:0 auto 10px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        var(--color-primary),
+        #E6B800
+    );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#111;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    box-shadow:0 6px 16px rgba(244,200,74,.18);
+
+}
+
+
+/* ===========================================
+   USER INFO
+=========================================== */
+
+.user-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+.username{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+    margin-bottom:6px;
+
+}
+
+
+/* ===========================================
+   ROLE
+=========================================== */
+
+.role-badge{
+
+    margin-top:4px;
+
+    padding:3px 10px;
+
+    border-radius:999px;
+
+    background:rgba(244,200,74,.10);
+
+    color:var(--color-primary);
+
+    font-size:10px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+}
+
+
+/* ===========================================
+   STATUS
+=========================================== */
+
+.user-status{
+
+    margin-top:8px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    color:var(--text-muted);
+
+    font-size:11px;
+
+}
+
+.status-dot{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:var(--color-success);
+
+    box-shadow:0 0 12px var(--color-success);
+
+}
+
+
+/* ===========================================
+   MENU
+=========================================== */
+
+.menu{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:12px 10px;
+
+}
+
+
+/* ===========================================
+   MENU ITEM
+=========================================== */
+
+.menu li{
+
+    margin-bottom:6px;
+
+}
+
+.menu li a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    height:42px;
+
+    padding:0 14px;
+
+    border-radius:10px;
+
+    color:var(--text-soft);
+
+    font-size:13px;
+
+    font-weight:500;
+
+    transition:var(--transition);
+
+}
+
+.menu li a:hover{
+
+    background:var(--bg-hover);
+
+    color:#fff;
+
+}
+
+
+/* ===========================================
+   ACTIVE
+=========================================== */
+
+.menu li.active a{
+
+    background:rgba(244,200,74,.12);
+
+    border:1px solid rgba(244,200,74,.20);
+
+    color:var(--color-primary);
+
+}
+
+
+/* ===========================================
+   LOGOUT
+=========================================== */
+
+.logout{
+
+    margin-top:20px;
+
+    padding-top:20px;
+
+    border-top:1px solid var(--border);
+
+}
+
+
+/* ===========================================
+   SIDEBAR SCROLLBAR
+=========================================== */
+
+.menu::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.menu::-webkit-scrollbar-thumb{
+
+    background:#3B4659;
+
+}
+
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media(max-width:1200px){
+
+    .sidebar{
+
+        width:240px;
+
+        min-width:240px;
+
+        max-width:240px;
+        
+
+    }
+
+}
+
+@media(max-width:992px){
+
+    .sidebar{
+
+        position:fixed;
+
+        left:-270px;
+
+        top:0;
+
+        z-index:var(--z-sidebar);
+
+        transition:var(--transition-slow);
+
+    }
+
+    .sidebar.show{
+
+        left:0;
+
+    }
+
+}
+
+.menu li.logout form,
+.menu li.logout button{
+    width:100%;
+}
+
+.menu li.logout button{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    height:42px;
+    padding:0 14px;
+    color:var(--text-soft);
+    border:0;
+    border-radius:10px;
+    background:transparent;
+    font:inherit;
+    font-size:13px;
+    font-weight:500;
+    text-align:left;
+    cursor:pointer;
+}
+
+.menu li.logout button:hover{
+    background:var(--bg-hover);
+    color:#fff;
+}

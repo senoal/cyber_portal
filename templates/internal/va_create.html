@@ -1,0 +1,303 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+
+<div class="topbar">
+    <h2>Tambah Data Vulnerability Assessment</h2>
+</div>
+
+<div class="content-box">
+
+    <div style="margin-bottom:20px;">
+
+        <a
+            href="{{ url_for('va.va_dashboard') }}"
+            class="btn-back">
+
+            ← Kembali
+
+        </a>
+
+    </div>
+
+    <section class="va-pdf-extractor" aria-labelledby="pdf-extractor-title">
+        <div>
+            <span class="va-register-eyebrow">Auto-fill dari PDF</span>
+            <h3 id="pdf-extractor-title">Ekstrak data laporan VA</h3>
+            <p>Unggah laporan PDF untuk mengisi field yang berhasil dideteksi. Periksa kembali hasilnya sebelum menyimpan.</p>
+        </div>
+        <div class="va-pdf-extractor-action">
+            <div id="va-pdf-dropzone" class="va-pdf-dropzone" role="button" tabindex="0" aria-label="Letakkan atau pilih laporan PDF">
+                <input id="va-pdf-input" type="file" accept="application/pdf,.pdf">
+                <span class="va-pdf-dropzone-icon" aria-hidden="true">⇧</span>
+                <span class="va-pdf-dropzone-label">Tarik PDF ke sini atau <strong>pilih file</strong></span>
+                <span id="va-pdf-file-name" class="va-pdf-file-name">Belum ada file dipilih</span>
+            </div>
+            <button id="va-extract-button" type="button" class="btn-import">Ekstrak dari PDF</button>
+        </div>
+        <p id="va-extract-status" class="form-note" role="status" aria-live="polite">PDF akan ikut disimpan sebagai attachment setelah Anda menyetujui preview. Maksimum ukuran file 10 MB.</p>
+    </section>
+
+    <form id="va-create-form"
+        method="POST"
+        enctype="multipart/form-data">
+
+    <div class="form-group">
+        <label>Scan Date</label>
+        <input type="date"
+               name="scan_date"
+               required>
+    </div>
+
+    <div class="form-group">
+        <label>Asset</label>
+        <input type="text"
+            name="asset"
+            required
+            placeholder="example.com">
+    </div>
+
+    <div class="form-group">
+        <label>Source</label>
+        <input type="text"
+            name="source"
+            required
+            placeholder="https://example.com">
+    </div>
+
+    <div class="form-group">
+        <label>Asset Type</label>
+        <select name="asset_type" required>
+
+            <option value="Web App">
+                Web App
+            </option>
+
+            <option value="Server">
+                Server
+            </option>
+
+            <option value="Database">
+                Database
+            </option>
+
+            <option value="Middleware">
+                Middleware
+            </option>
+
+            <option value="Mobile">
+                Mobile
+            </option>
+
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Critical</label>
+        <input type="number"
+               name="critical"
+               value="0">
+    </div>
+
+    <div class="form-group">
+        <label>High</label>
+        <input type="number"
+               name="high"
+               value="0">
+    </div>
+
+    <div class="form-group">
+        <label>Medium</label>
+        <input type="number"
+               name="medium"
+               value="0">
+    </div>
+
+    <div class="form-group">
+        <label>Low</label>
+        <input type="number"
+               name="low"
+               value="0">
+    </div>
+
+    <div class="form-group">
+        <label>Info</label>
+        <input type="number"
+               name="info"
+               value="0">
+    </div>
+
+    <div class="form-group">
+        <label>Risk Level</label>
+
+        <select name="risk_level">
+
+            <option value="Critical">
+                Critical
+            </option>
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Medium">
+                Medium
+            </option>
+
+            <option value="Low">
+                Low
+            </option>
+
+            <option value="Info">
+                Info
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Attachment</label>
+
+        <input
+            type="file"
+            name="attachment"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg,.gif">
+
+        <small class="form-note">
+            Supported file:
+            PDF, Word, Excel, CSV,
+            TXT, PNG, JPG, JPEG, GIF
+            (Maximum 10 MB)
+        </small>
+
+    </div>
+
+    <br>
+
+    <button
+        type="submit"
+        class="btn-import">
+        Simpan Data
+    </button>
+
+</form>
+
+</div>
+
+<dialog id="va-preview-dialog" class="va-preview-dialog" aria-labelledby="va-preview-title">
+    <div class="va-preview-header">
+        <div><span class="va-register-eyebrow">Review sebelum simpan</span><h3 id="va-preview-title">Preview data Vulnerability Assessment</h3><p id="va-preview-profile"></p></div>
+        <button type="button" id="va-preview-close" class="va-preview-close" aria-label="Tutup preview">&times;</button>
+    </div>
+    <p class="va-preview-notice">Konfirmasi atau koreksi nilai berikut. Data baru akan dikirim ke database setelah Anda menekan Submit.</p>
+    <div class="va-preview-grid">
+        <label>Scan Date<input id="preview-scan_date" type="date"></label>
+        <label>Asset<input id="preview-asset" type="text"></label>
+        <label>Source<input id="preview-source" type="text"></label>
+        <label>Asset Type<select id="preview-asset_type"><option>Web App</option><option>Server</option><option>Database</option><option>Middleware</option><option>Mobile</option></select></label>
+        <label>Critical<input id="preview-critical" type="number" min="0"></label>
+        <label>High<input id="preview-high" type="number" min="0"></label>
+        <label>Medium<input id="preview-medium" type="number" min="0"></label>
+        <label>Low<input id="preview-low" type="number" min="0"></label>
+        <label>Info<input id="preview-info" type="number" min="0"></label>
+        <label>Risk Level<select id="preview-risk_level"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option><option>Info</option></select></label>
+    </div>
+    <div class="va-preview-actions"><button id="va-preview-cancel" type="button" class="btn-reset">Batal</button><button id="va-preview-submit" type="button" class="btn-import">Submit ke Database</button></div>
+</dialog>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const input = document.getElementById('va-pdf-input');
+    const button = document.getElementById('va-extract-button');
+    const status = document.getElementById('va-extract-status');
+    const dropzone = document.getElementById('va-pdf-dropzone');
+    const fileName = document.getElementById('va-pdf-file-name');
+    const form = document.getElementById('va-create-form');
+    const dialog = document.getElementById('va-preview-dialog');
+    const fields = ['scan_date', 'asset', 'source', 'asset_type', 'critical', 'high', 'medium', 'low', 'info', 'risk_level'];
+
+    const setSelectedFile = (file) => {
+        if (!file) return;
+        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+            status.textContent = 'File harus berformat PDF.';
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            status.textContent = 'Ukuran PDF melebihi batas 10 MB.';
+            return;
+        }
+        const transfer = new DataTransfer();
+        transfer.items.add(file);
+        input.files = transfer.files;
+        fileName.textContent = file.name;
+        dropzone.classList.add('has-file');
+        status.textContent = 'File siap diekstrak. Klik “Ekstrak dari PDF”.';
+    };
+
+    input.addEventListener('change', () => setSelectedFile(input.files[0]));
+    ['dragenter', 'dragover'].forEach((eventName) => dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.add('is-dragging');
+    }));
+    ['dragleave', 'drop'].forEach((eventName) => dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.remove('is-dragging');
+    }));
+    dropzone.addEventListener('drop', (event) => setSelectedFile(event.dataTransfer.files[0]));
+    dropzone.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); }
+    });
+
+    button.addEventListener('click', async () => {
+        const file = input.files[0];
+        if (!file) { status.textContent = 'Tarik atau pilih laporan PDF terlebih dahulu.'; return; }
+
+        button.disabled = true;
+        status.textContent = 'Membaca dan mengekstrak data dari PDF...';
+        const payload = new FormData();
+        payload.append('pdf', file);
+        try {
+            const response = await fetch("{{ url_for('va.extract_va_pdf') }}", { method: 'POST', body: payload });
+            const result = await response.json();
+            if (!response.ok || !result.success) throw new Error(result.message || 'Ekstraksi gagal.');
+
+            fields.forEach((name) => {
+                const previewField = document.getElementById(`preview-${name}`);
+                previewField.value = result.data[name] ?? '';
+            });
+            document.getElementById('va-preview-profile').textContent = `Format laporan: ${result.data.report_profile || 'Tidak diketahui'} · Confidence: ${result.data.extraction_confidence || 'Needs review'}. ${result.data.extraction_note || 'Periksa kembali seluruh field sebelum menyimpan.'}`;
+            dialog.showModal();
+            status.textContent = 'Hasil ekstrak siap ditinjau.';
+        } catch (error) {
+            status.textContent = error.message || 'PDF tidak dapat diekstrak.';
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    const cancelPreview = () => { dialog.close(); status.textContent = 'Preview dibatalkan. Tidak ada data yang disimpan.'; };
+    document.getElementById('va-preview-cancel').addEventListener('click', cancelPreview);
+    document.getElementById('va-preview-close').addEventListener('click', cancelPreview);
+    document.getElementById('va-preview-submit').addEventListener('click', () => {
+        fields.forEach((name) => {
+            const field = form.elements.namedItem(name);
+            field.value = document.getElementById(`preview-${name}`).value;
+        });
+        // Reuse the selected source report as the VA attachment sent to the server.
+        const attachment = form.elements.namedItem('attachment');
+        if (input.files[0] && attachment) {
+            const transfer = new DataTransfer();
+            transfer.items.add(input.files[0]);
+            attachment.files = transfer.files;
+        }
+        dialog.close();
+        form.requestSubmit();
+    });
+})();
+</script>
+{% endblock %}

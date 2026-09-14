@@ -1,0 +1,63 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+<div class="content-wrapper tech-page">
+    <header class="tech-hero">
+        <div class="tech-hero-copy">
+            <span class="tech-eyebrow"><span></span> Technology workspace</span>
+            <h1>PDF <em>Manager</em></h1>
+            <p>Ruang kerja dokumen yang dirancang untuk membantu tim mengolah file secara aman, cepat, dan terkontrol.</p>
+        </div>
+        <div class="tech-hero-status">
+            <span class="tech-status-dot"></span>
+            <div><strong>Secure processing</strong><small>File tetap dalam kontrol Anda</small></div>
+        </div>
+    </header>
+
+    <section class="tech-intro" aria-labelledby="tech-tools-title">
+        <div>
+            <span class="tech-section-label">AVAILABLE MODULES</span>
+            <h2 id="tech-tools-title">Pilih teknologi yang ingin digunakan</h2>
+        </div>
+        <p>Pilih modul untuk mengelola dokumen PDF Anda secara cepat dan aman.</p>
+    </section>
+
+    <section class="tech-tools-grid" aria-label="Pilihan teknologi">
+        <article class="tech-tool-card tech-tool-card--merge">
+            <div class="tech-card-top"><span class="tech-icon" aria-hidden="true">⊞</span><span class="tech-chip">ORGANIZE</span></div>
+            <div class="tech-card-body"><h3>Merge PDF</h3><p>Gabungkan beberapa dokumen PDF menjadi satu file dalam urutan yang Anda pilih.</p></div>
+            <div class="tech-card-footer"><span>Multiple files</span><a href="{{ url_for('user.tech_merge_pdf') }}" class="tech-card-link">Buka merger <span>→</span></a></div>
+        </article>
+
+        <article class="tech-tool-card tech-tool-card--merge">
+            <div class="tech-card-top"><span class="tech-icon" aria-hidden="true">✎</span><span class="tech-chip">EDIT</span></div>
+            <div class="tech-card-body"><h3>Edit PDF</h3><p>Tambahkan gambar atau tanda tangan, atur posisi, dan ubah ukurannya pada halaman PDF.</p></div>
+            <div class="tech-card-footer"><span>Image &amp; signature</span><a href="{{ url_for('user.tech_edit_pdf') }}" class="tech-card-link">Buka editor <span>→</span></a></div>
+        </article>
+
+        <article class="tech-tool-card tech-tool-card--delete">
+            <div class="tech-card-top"><span class="tech-icon" aria-hidden="true">−</span><span class="tech-chip">ORGANIZE</span></div>
+            <div class="tech-card-body"><h3>Delete PDF</h3><p>Hapus halaman tertentu dari PDF tanpa mengubah halaman lain pada dokumen.</p></div>
+            <div class="tech-card-footer"><span>Remove pages</span><a href="{{ url_for('user.tech_delete_pdf') }}" class="tech-card-link">Buka editor <span>→</span></a></div>
+        </article>
+
+        <article class="tech-tool-card tech-tool-card--convert">
+            <div class="tech-card-top"><span class="tech-icon" aria-hidden="true">⇄</span><span class="tech-chip">CONVERSION</span></div>
+            <div class="tech-card-body"><h3>PDF to HTML</h3><p>Ubah dokumen PDF menjadi HTML yang terstruktur untuk kebutuhan web dan dokumentasi.</p></div>
+            <div class="tech-card-footer"><span>Preserve layout</span><a href="{{ url_for('user.tech_pdf_to_html') }}" class="tech-card-link">Buka converter <span>→</span></a></div>
+        </article>
+
+        <article class="tech-tool-card tech-tool-card--document">
+            <div class="tech-card-top"><span class="tech-icon" aria-hidden="true">▤</span><span class="tech-chip">CONVERSION</span></div>
+            <div class="tech-card-body"><h3>PDF to DOCX</h3><p>Konversi PDF ke format Word agar konten dokumen dapat dilanjutkan dalam alur kerja Anda.</p></div>
+            <div class="tech-card-footer"><span>Editable output</span><button type="button" disabled>Segera hadir <span>→</span></button></div>
+        </article>
+
+    </section>
+
+    <section class="tech-security-note">
+        <span class="tech-security-icon">⌁</span>
+        <div><strong>Designed for a secure document workflow</strong><p>Setiap modul akan dibangun dengan fokus pada privasi file, kejelasan proses, dan hasil yang dapat diandalkan.</p></div>
+    </section>
+</div>
+{% endblock %}

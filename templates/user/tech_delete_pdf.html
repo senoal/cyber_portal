@@ -1,0 +1,27 @@
+{% extends 'user/layout.html' %}
+{% block content %}
+<div class="content-wrapper merge-pdf-page">
+  <header class="html-converter-header"><a href="{{ url_for('user.tech') }}">&larr; Kembali ke PDF Manager</a><span class="tech-eyebrow"><span></span> PDF ORGANIZER</span><h1>Delete <em>PDF Pages</em></h1><p>Hapus halaman tertentu dari dokumen PDF. File asli tetap aman dan hasilnya dibuat sebagai file baru.</p></header>
+  <form id="delete-pdf-form" method="POST" enctype="multipart/form-data">
+    <input id="delete-file-input" type="file" accept="application/pdf,.pdf" hidden>
+    <section id="delete-drop-zone" class="merge-drop-zone" tabindex="0" role="button"><span class="merge-drop-icon">&minus;</span><div><h2>Tarik &amp; lepas file PDF di sini</h2><p>atau klik untuk memilih file dari perangkat Anda</p></div><small>Maksimal 25 MB &middot; Format PDF</small></section>
+    <section id="delete-file-details" class="delete-file-details" hidden><span>PDF</span><div><strong id="delete-file-name"></strong><small id="delete-file-size"></small></div><button id="delete-change-file" type="button">Ganti file</button></section>
+    <label id="delete-page-field" class="delete-page-field" hidden><span>Halaman yang ingin dihapus</span><input id="delete-pages" name="pages" type="text" placeholder="Contoh: 1, 3-5" autocomplete="off" required><small>Gunakan koma untuk halaman terpisah dan tanda hubung untuk rentang halaman.</small></label>
+    <div id="delete-error" class="merge-error" role="alert" hidden></div>
+    <div id="delete-loading" class="delete-loading" hidden><span></span><div><strong>Menghapus halaman PDF</strong><small>Dokumen sedang diproses. Mohon jangan menutup halaman ini.</small></div></div>
+    <section id="delete-success" class="delete-success" hidden><span>✓</span><div><strong>PROSES SELESAI</strong><h2>PDF baru siap diunduh</h2><p>Halaman yang dipilih telah dihapus dari salinan dokumen.</p></div><a id="delete-download" href="#" download>Download PDF <b>&darr;</b></a></section>
+    <div class="merge-actions"><button id="delete-submit" type="submit" disabled>Hapus halaman <span>&rarr;</span></button></div>
+  </form>
+</div>
+<script>
+(() => {
+  const form=document.getElementById('delete-pdf-form'),input=document.getElementById('delete-file-input'),zone=document.getElementById('delete-drop-zone'),details=document.getElementById('delete-file-details'),name=document.getElementById('delete-file-name'),size=document.getElementById('delete-file-size'),change=document.getElementById('delete-change-file'),field=document.getElementById('delete-page-field'),pages=document.getElementById('delete-pages'),submit=document.getElementById('delete-submit'),loading=document.getElementById('delete-loading'),success=document.getElementById('delete-success'),download=document.getElementById('delete-download'),error=document.getElementById('delete-error');let file=null,url=null;
+  const formatSize=b=>b<1048576?`${Math.ceil(b/1024)} KB`:`${(b/1048576).toFixed(1)} MB`;
+  const message=m=>{error.textContent=m;error.hidden=!m};
+  const refresh=()=>{submit.disabled=!file||!pages.value.trim()};
+  const setFile=next=>{if(!next)return;if(!next.name.toLowerCase().endsWith('.pdf'))return message(`${next.name} bukan file PDF.`);if(next.size>26214400)return message('Ukuran file maksimal 25 MB.');file=next;message('');success.hidden=true;if(url){URL.revokeObjectURL(url);url=null}name.textContent=file.name;size.textContent=formatSize(file.size);details.hidden=false;field.hidden=false;refresh()};
+  zone.onclick=()=>input.click();zone.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();input.click()}};input.onchange=e=>{setFile(e.target.files[0]);input.value=''};['dragenter','dragover'].forEach(n=>zone.addEventListener(n,e=>{e.preventDefault();zone.classList.add('is-over')}));['dragleave','drop'].forEach(n=>zone.addEventListener(n,e=>{e.preventDefault();zone.classList.remove('is-over')}));zone.addEventListener('drop',e=>setFile(e.dataTransfer.files[0]));change.onclick=()=>input.click();pages.oninput=refresh;
+  form.onsubmit=async event=>{event.preventDefault();if(!file||!pages.value.trim())return;message('');success.hidden=true;loading.hidden=false;submit.disabled=true;await new Promise(requestAnimationFrame);const data=new FormData();data.append('pdf',file,file.name);data.append('pages',pages.value.trim());try{const response=await fetch(form.action||location.href,{method:'POST',body:data}),type=response.headers.get('content-type')||'';if(!response.ok||!type.includes('application/pdf'))throw new Error(await response.text()||'PDF tidak dapat diproses. Silakan coba kembali.');const blob=await response.blob();if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(blob);download.href=url;download.download=`${file.name.replace(/\.pdf$/i,'')}_pages_removed.pdf`;success.hidden=false}catch(err){message(err.message)}finally{loading.hidden=true;refresh()}};
+})();
+</script>
+{% endblock %}

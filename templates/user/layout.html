@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Black Owl</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.png') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/application_directory.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-premium.css') }}">
+    {% block extra_head %}{% endblock %}
+
+</head>
+
+<body>
+
+<div class="app-wrapper">
+
+    <button class="app-nav-toggle" type="button" aria-label="Buka navigasi" aria-expanded="false">☰</button>
+    <button class="app-nav-backdrop" type="button" tabindex="-1" aria-label="Tutup navigasi"></button>
+
+    {% if not pdf_mode %}
+        {% include 'user/components/sidebar.html' %}
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+(() => {
+    const csrfToken = "{{ csrf_token() }}";
+    document.addEventListener('submit', (event) => {
+        const form = event.target;
+        if (!(form instanceof HTMLFormElement) || !['POST', 'PUT', 'PATCH', 'DELETE'].includes(form.method.toUpperCase())) return;
+        if (!form.querySelector('input[name="_csrf_token"]')) {
+            const input = document.createElement('input');
+            input.type = 'hidden'; input.name = '_csrf_token'; input.value = csrfToken;
+            form.appendChild(input);
+        }
+    }, true);
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = (input, init = {}) => {
+        const method = (init.method || (input instanceof Request && input.method) || 'GET').toUpperCase();
+        if (!['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(method)) {
+            const headers = new Headers(init.headers || (input instanceof Request ? input.headers : undefined));
+            headers.set('X-CSRF-Token', csrfToken);
+            init = { ...init, headers };
+        }
+        return nativeFetch(input, init);
+    };
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.querySelector('.app-nav-toggle');
+    const backdrop = document.querySelector('.app-nav-backdrop');
+    if (!sidebar || !toggle || !backdrop) return;
+    const close = () => { sidebar.classList.remove('show'); document.body.classList.remove('nav-open'); toggle.setAttribute('aria-expanded', 'false'); };
+    const open = () => { sidebar.classList.add('show'); document.body.classList.add('nav-open'); toggle.setAttribute('aria-expanded', 'true'); };
+    toggle.addEventListener('click', () => sidebar.classList.contains('show') ? close() : open());
+    backdrop.addEventListener('click', close);
+    // On a touch device, close the drawer after following a navigation link.
+    // This prevents an opened drawer from visually covering the destination.
+    sidebar.querySelectorAll('a[href]').forEach((link) => link.addEventListener('click', close));
+    window.addEventListener('resize', () => { if (window.innerWidth > 992) close(); });
+
+    document.querySelectorAll('.menu-group-label[aria-controls]').forEach((groupButton) => {
+        const submenu = document.getElementById(groupButton.getAttribute('aria-controls'));
+        if (!submenu) return;
+        groupButton.addEventListener('click', () => {
+            const willOpen = submenu.hidden;
+            submenu.hidden = !willOpen;
+            submenu.classList.toggle('is-open', willOpen);
+            groupButton.setAttribute('aria-expanded', String(willOpen));
+            const marker = groupButton.querySelector('b');
+            if (marker) marker.textContent = willOpen ? '−' : '+';
+        });
+    });
+})();
+</script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+
+</html>

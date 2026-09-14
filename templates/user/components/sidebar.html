@@ -1,0 +1,142 @@
+<div class="sidebar">
+
+    <!-- ===========================
+         BRAND
+    ============================ -->
+    <div class="sidebar-header">
+
+        <div class="brand">
+
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="SEC_APP">
+
+            <div class="brand-text">
+
+                <h2>Black Owl</h2>
+
+                <p>IT Security Portal</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===========================
+         USER PROFILE
+    ============================ -->
+    <div class="sidebar-profile">
+
+        <div class="user-card">
+
+            <div class="avatar">
+                {{ session.user[0]|upper }}
+            </div>
+
+            <div class="user-info">
+
+                <div class="username">
+                    {{ session.user }}
+                </div>
+
+                <div class="role-badge">
+                    {{ session.level }}
+                </div>
+
+                <div class="user-status">
+
+                    <span class="status-dot"></span>
+
+                    <span>Online</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===========================
+         MENU
+    ============================ -->
+    <ul class="menu">
+
+        {% if 'dashboard' in session.get('menu_access', []) %}
+        <li class="{% if request.path == '/user/dashboard' %}active{% endif %}">
+            <a href="{{ url_for('user.dashboard') }}">
+                <span>Dashboard</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% set vulnerability_active = request.path.startswith('/user/va_analysis') or (request.endpoint and request.endpoint.startswith('va.')) %}
+        {% if 'va_analysis' in session.get('menu_access', []) or 'va_register' in session.get('menu_access', []) %}
+        <li class="menu-group {% if vulnerability_active %}active{% endif %}">
+            <button class="menu-group-label" type="button" aria-expanded="{{ 'true' if vulnerability_active else 'false' }}" aria-controls="vulnerability-submenu">Vulnerability <b>{% if vulnerability_active %}−{% else %}+{% endif %}</b></button>
+            <ul id="vulnerability-submenu" class="menu-submenu {% if vulnerability_active %}is-open{% endif %}" {% if not vulnerability_active %}hidden{% endif %}>
+                {% if 'va_analysis' in session.get('menu_access', []) %}
+                <li class="{% if request.path.startswith('/user/va_analysis') %}active{% endif %}"><a href="{{ url_for('user.va_analysis') }}"><span>VA Dashboard</span></a></li>
+                {% endif %}
+                {% if 'va_register' in session.get('menu_access', []) %}
+                <li class="{% if request.endpoint == 'va.va_tracker' %}active{% endif %}"><a href="{{ url_for('va.va_tracker') }}"><span>VA Coverage Tracker</span></a></li>
+                <li class="{% if request.endpoint and request.endpoint.startswith('va.') and request.endpoint != 'va.va_tracker' %}active{% endif %}"><a href="{{ url_for('va.va_dashboard') }}"><span>VA Register</span></a></li>
+                {% endif %}
+            </ul>
+        </li>
+        {% endif %}
+
+        {% if 'pentest' in session.get('menu_access', []) %}
+        <li class="{% if request.path.startswith('/user/pentest') %}active{% endif %}">
+            <a href="{{ url_for('user.pentest') }}">
+                <span>Pentest</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if 'ip_intelligence' in session.get('menu_access', []) %}
+        <li class="{% if request.path.startswith('/user/ip_intelligence') %}active{% endif %}">
+            <a href="{{ url_for('user.ip_intelligence') }}">
+                <span>IP Intelligence</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if 'tech' in session.get('menu_access', []) %}
+        <li class="{% if request.path.startswith('/user/tech') %}active{% endif %}">
+            <a href="{{ url_for('user.tech') }}">
+                <span>PDF Manager</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if 'application_directory' in session.get('menu_access', []) %}
+        <li class="{% if request.endpoint and request.endpoint.startswith('application_directory.') %}active{% endif %}">
+            <a href="{{ url_for('application_directory.index') }}">
+                <span>Direktori Aplikasi</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if 'tasks' in session.get('menu_access', []) %}
+        <li class="{% if request.endpoint and request.endpoint.startswith('tasks.') %}active{% endif %}">
+            <a href="{{ url_for('tasks.index') }}">
+                <span>Tasks</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if 'organization' in session.get('menu_access', []) %}
+        <li class="{% if request.endpoint == 'user.profile_blackowl' %}active{% endif %}">
+            <a href="{{ url_for('user.profile_blackowl') }}">
+                <span>BlackOwl Organization</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="logout">
+            <form method="POST" action="{{ url_for('auth.logout') }}"><button type="submit"><span>Logout</span></button></form>
+        </li>
+
+    </ul>
+
+</div>

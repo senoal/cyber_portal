@@ -1,0 +1,12 @@
+{% extends 'admin/layout.html' %}
+{% set is_edit = user is defined and user %}
+{% block title %}{{ 'Edit User' if is_edit else 'Tambah User' }}{% endblock %}
+{% block content %}
+<header class="admin-page-header"><div><p class="admin-eyebrow">User management</p><h1 class="admin-page-title">{{ 'Edit User' if is_edit else 'Tambah User' }}</h1><p class="admin-page-subtitle">{{ 'Perbarui informasi pengguna sistem.' if is_edit else 'Tambahkan pengguna baru ke sistem.' }}</p></div></header>
+<section class="admin-card admin-form-card"><form method="POST" class="admin-form-grid">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="admin-field"><label for="nama">Nama</label><input id="nama" type="text" name="nama" value="{{ user.nama if is_edit else '' }}" required></div><div class="admin-field"><label for="username">Username</label><input id="username" type="text" name="username" value="{{ user.username if is_edit else '' }}" required></div><div class="admin-field"><label for="password">Password {{ '(kosongkan jika tidak diubah)' if is_edit else '' }}</label><input id="password" type="password" name="password" {{ '' if is_edit else 'required' }}></div><div class="admin-field"><label for="service_access">Level</label><select id="service_access" name="service_access" required><option value="">-- Pilih Service --</option>{% for s in services %}<option value="{{ s.id }}" data-level="{{ s.nama }}" {% if is_edit and user.service_access == s.nama %}selected{% endif %}>{{ s.nama }}</option>{% endfor %}</select></div><div class="admin-field"><label for="keterangan">Keterangan</label><input id="keterangan" type="text" name="keterangan" value="{{ user.keterangan if is_edit else '' }}"></div>
+    <fieldset class="admin-menu-access"><legend>Akses Menu</legend><p>Pilih menu yang dapat dibuka pengguna. Daftar ini mengikuti menu terbaru pada sidebar user ({{ menu_options|length }} akses tersedia).</p><div class="admin-menu-options">{% for key, label in menu_options %}<label><input type="checkbox" name="menu_access" value="{{ key }}" {% if key in menu_access %}checked{% endif %}> <span>{{ label }}</span></label>{% endfor %}</div></fieldset>
+    <div class="admin-form-actions"><button type="submit" class="admin-button admin-button-primary">{{ 'Simpan Perubahan' if is_edit else 'Tambah User' }}</button><a href="{{ url_for('users.manage_users') }}" class="admin-button admin-button-secondary">Kembali</a></div>
+</form></section>
+{% endblock %}

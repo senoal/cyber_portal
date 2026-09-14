@@ -1,0 +1,7 @@
+{% extends 'user/layout.html' %}
+{% block content %}
+<div class="content-wrapper ip-form-page">
+    <header class="ip-form-header"><a href="{{ url_for('user.ip_intelligence') }}">← Kembali ke IP Intelligence</a><span class="ip-eyebrow"><span></span> NEW INTELLIGENCE RECORD</span><h1>Tambah <em>IP Address</em></h1><p>Tambahkan alamat IP dan status reputasinya ke dalam database pemantauan.</p></header>
+    <section class="ip-form-panel"><form method="POST" action="{{ url_for('user.ip_save') }}"><div class="ip-form-grid"><div class="form-group"><label for="blacklisted_address">IP Address</label><input id="blacklisted_address" type="text" name="blacklisted_address" required placeholder="Contoh: 8.8.8.8"></div><div class="form-group"><label for="status">Security Status</label><select id="status" name="status" required><option value="Block">Block</option><option value="Allow">Allow</option></select></div><div class="form-group ip-form-full"><label for="description">Description <small>Optional</small></label><textarea id="description" name="description" rows="6" placeholder="Tambahkan informasi threat intelligence atau alasan penetapan status."></textarea></div></div><div class="ip-form-actions"><a href="{{ url_for('user.ip_intelligence') }}" class="ip-cancel-button">Batal</a><button type="submit" class="ip-save-button">Simpan IP Address <span>→</span></button></div></form></section>
+</div>
+{% endblock %}

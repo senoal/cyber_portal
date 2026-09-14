@@ -1,0 +1,161 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+
+<div class="topbar">
+
+    <h2>Detail Vulnerability Assessment</h2>
+
+</div>
+
+<div class="content-box">
+
+    <div style="margin-bottom:20px;">
+
+        <a
+            href="{{ url_for('va.va_dashboard') }}"
+            class="btn-back">
+
+            ← Kembali
+
+        </a>
+
+    </div>
+
+    <table class="detail-table">
+
+        <tr>
+            <td>VA ID</td>
+            <td>{{ data.VA_ID }}</td>
+        </tr>
+
+        <tr>
+            <td>Scan Date</td>
+            <td>{{ data.Scan_Date }}</td>
+        </tr>
+
+        <tr>
+            <td>Source</td>
+            <td>{{ data.Source }}</td>
+        </tr>
+
+        <tr>
+            <td>Asset</td>
+            <td>{{ data.Asset }}</td>
+        </tr>
+
+        <tr>
+            <td>Asset Type</td>
+            <td>{{ data.Asset_Type }}</td>
+        </tr>
+
+        <tr>
+            <td>Critical</td>
+            <td>{{ data.Critical }}</td>
+        </tr>
+
+        <tr>
+            <td>High</td>
+            <td>{{ data.High }}</td>
+        </tr>
+
+        <tr>
+            <td>Medium</td>
+            <td>{{ data.Medium }}</td>
+        </tr>
+
+        <tr>
+            <td>Low</td>
+            <td>{{ data.Low }}</td>
+        </tr>
+
+        <tr>
+            <td>Info</td>
+            <td>{{ data.Info }}</td>
+        </tr>
+
+        <tr>
+            <td>Total Vulnerability</td>
+            <td>{{ data.Total_Vulnerability }}</td>
+        </tr>
+
+        <tr>
+            <td>Risk Level</td>
+            <td>{{ data.Risk_Level }}</td>
+        </tr>
+
+        <tr>
+            <td>Created At</td>
+            <td>{{ data.Created_At }}</td>
+        </tr>
+
+        <tr>
+            <th>Attachment</th>
+
+            <td>
+
+                {% if attachment %}
+
+                    <div class="attachment-card">
+
+                        <div class="attachment-file-icon" aria-hidden="true">
+                            {{ attachment.File_Type|upper }}
+                        </div>
+
+                        <div class="attachment-content">
+                            <span class="attachment-eyebrow">Attached file</span>
+                            <a
+                                href="{{ url_for('va.download_va_attachment', va_id=data.VA_ID) }}"
+                                class="attachment-file-link"
+                                title="Download {{ attachment.File_Original_Name }}">
+                                {{ attachment.File_Original_Name }}
+                            </a>
+                            <div class="attachment-meta">
+                                <span>{{ attachment.File_Type|upper }}</span>
+                                <span>{{ (attachment.File_Size / 1024)|round(2) }} KB</span>
+                            </div>
+                        </div>
+                        <br><br>
+
+                        <a
+                            href="{{ url_for('va.download_va_attachment', va_id=data.VA_ID) }}"
+                            class="btn-download"
+                            title="Download {{ attachment.File_Original_Name }}">
+
+                            Download File
+
+                        </a>
+
+                        <br>
+
+                        <small>
+
+                            {{ attachment.File_Type|upper }}
+
+                            •
+
+                            {{ (attachment.File_Size / 1024)|round(2) }} KB
+
+                        </small>
+
+                    </div>
+
+                {% else %}
+
+                    <span class="text-muted">
+
+                        No attachment
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+{% endblock %}

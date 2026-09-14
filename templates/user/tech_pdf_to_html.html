@@ -1,0 +1,12 @@
+{% extends 'user/layout.html' %}
+{% block content %}
+<div class="content-wrapper html-converter-page">
+    <header class="html-converter-header"><a href="{{ url_for('user.tech') }}">← Kembali ke Tech</a><span class="tech-eyebrow"><span></span> PDF TO HTML</span><h1>Convert PDF <em>to HTML</em></h1><p>Konversi dokumen PDF ke halaman HTML yang dapat langsung dibuka di browser, dengan struktur teks dan tata letak sumber tetap dipertahankan.</p></header>
+    {% with messages = get_flashed_messages() %}{% if messages %}<div class="html-converter-alert">{{ messages[0] }}</div>{% endif %}{% endwith %}
+    {% if not document_id %}
+    <form class="html-upload-zone" method="POST" action="{{ url_for('user.tech_pdf_to_html_convert') }}" enctype="multipart/form-data"><span class="html-upload-icon">⇄</span><h2>Pilih dokumen PDF</h2><p>File hingga 25 MB. Konten dokumen tidak diubah; hanya format output yang dikonversi.</p><label><input type="file" name="pdf" accept="application/pdf,.pdf" required><span>Pilih file PDF</span></label><button type="submit">Convert ke HTML <span>→</span></button><small>Hasil akan dibuka pada tab browser baru.</small></form>
+    {% else %}
+    <section class="html-conversion-success"><span class="html-success-icon">✓</span><div><span>CONVERSION COMPLETE</span><h2>HTML siap dibuka</h2><p>{{ original_name }} telah dikonversi tanpa mengubah isi teks dari dokumen sumber.</p></div><a href="{{ url_for('user.tech_pdf_to_html_view', document_id=document_id) }}" target="_blank" rel="noopener">Buka di browser <span>↗</span></a><a class="html-secondary-action" href="{{ url_for('user.tech_pdf_to_html') }}">Convert dokumen lain</a></section>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+<section class="va-tracker-page">
+    <header class="va-tracker-header">
+        <div>
+            <span class="va-register-eyebrow">Security Operations</span>
+            <h2>VA Coverage Tracker</h2>
+            <p>Monitor ketersediaan hasil Vulnerability Assessment setiap asset dalam satu tahun.</p>
+        </div>
+        <form method="GET" class="va-tracker-filter-form" aria-label="Filter VA Coverage Tracker">
+            <label class="va-tracker-asset-filter" for="tracker-asset"><span>Cari asset</span><input id="tracker-asset" type="search" name="asset" value="{{ asset_filter }}" placeholder="Nama asset..."></label>
+            <label class="va-tracker-year-form" for="tracker-year"><span>Tahun monitoring</span><select id="tracker-year" name="year">
+                {% if selected_year not in available_years %}<option value="{{ selected_year }}">{{ selected_year }}</option>{% endif %}
+                {% for year in available_years %}<option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>{% endfor %}
+            </select></label>
+            <button type="submit">Cari</button>
+            {% if asset_filter %}<a href="{{ url_for('va.va_tracker', year=selected_year) }}">Reset</a>{% endif %}
+        </form>
+    </header>
+
+    <section class="va-tracker-summary" aria-label="Ringkasan cakupan VA">
+        <div class="va-tracker-summary-copy">
+            <span>Cakupan scan tahun {{ selected_year }}</span>
+            <strong>{{ coverage_percent }}%</strong>
+            <small>{{ total_completed }} dari {{ total_expected }} target bulan tercatat.</small>
+        </div>
+        <div class="va-tracker-progress" aria-label="{{ coverage_percent }} persen cakupan scan"><i style="width: {{ coverage_percent }}%"></i></div>
+        <div class="va-tracker-legend" aria-label="Keterangan warna"><span><i class="is-covered"></i> Data tersedia</span><span><i class="is-missing"></i> Belum ada data</span></div>
+    </section>
+
+    <section class="va-tracker-card" aria-labelledby="va-tracker-table-title">
+        <div class="va-tracker-card-heading">
+            <div><h3 id="va-tracker-table-title">Status scan per asset</h3><p>Setiap sel mewakili ketersediaan minimal satu hasil scan pada bulan tersebut.</p></div>
+            <span>{{ total_assets }} asset</span>
+        </div>
+        {% set month_names = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] %}
+        {% if tracker_rows %}
+        <div class="va-tracker-table-wrap">
+            <table class="va-tracker-table">
+                <thead><tr><th scope="col">Asset</th>{% for month_name in month_names %}<th scope="col">{{ month_name }}</th>{% endfor %}<th scope="col">Cakupan</th></tr></thead>
+                <tbody>
+                    {% for row in tracker_rows %}
+                    <tr>
+                        <th scope="row">{{ row.asset }}</th>
+                        {% for month_number in range(1, 13) %}
+                            {% set scan = row.months.get(month_number) %}
+                            <td class="va-tracker-month {% if scan %}is-covered{% else %}is-missing{% endif %}" {% if scan %}title="{{ scan.scan_count }} scan, terakhir {{ scan.latest_scan_date }}"{% else %}title="Belum ada data scan"{% endif %}>
+                                {% if scan %}<strong>Terdata</strong>{% else %}<span>—</span><small>Belum ada</small>{% endif %}
+                            </td>
+                        {% endfor %}
+                        <td class="va-tracker-coverage"><strong>{{ row.completed_months }}/12</strong><small>{{ ((row.completed_months / 12) * 100)|round|int }}%</small></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if total_pages > 1 %}
+        <nav class="va-tracker-pagination" aria-label="Pagination asset VA tracker">
+            <span>Menampilkan <strong>{{ ((page - 1) * 10) + 1 }}–{{ [page * 10, total_assets]|min }}</strong> dari {{ total_assets }} asset</span>
+            <div>
+                {% if page > 1 %}<a href="{{ url_for('va.va_tracker', year=selected_year, asset=asset_filter, page=page-1) }}">← Sebelumnya</a>{% endif %}
+                <b>Halaman {{ page }} / {{ total_pages }}</b>
+                {% if page < total_pages %}<a href="{{ url_for('va.va_tracker', year=selected_year, asset=asset_filter, page=page+1) }}">Berikutnya →</a>{% endif %}
+            </div>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="va-tracker-empty"><strong>Belum ada data VA untuk tahun {{ selected_year }}.</strong><span>Tambahkan hasil scan pada VA Register agar coverage asset tampil otomatis di tracker ini.</span><a href="{{ url_for('va.create_va') }}">+ Tambah Data VA</a></div>
+        {% endif %}
+    </section>
+</section>
+{% endblock %}

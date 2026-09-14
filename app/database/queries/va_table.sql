@@ -1,0 +1,34 @@
+USE SEC_PORTAL;
+GO
+
+CREATE TABLE dbo.VA_Assessment
+(
+    VA_ID BIGINT IDENTITY(1,1) PRIMARY KEY,
+
+    Scan_Date DATE NOT NULL,
+
+    Asset VARCHAR(200) NOT NULL,
+
+    Status_Kepentingan_Aset TINYINT NOT NULL,
+
+    Asset_Type VARCHAR(100) NOT NULL,
+
+    Critical INT NOT NULL DEFAULT(0),
+
+    High INT NOT NULL DEFAULT(0),
+
+    Medium INT NOT NULL DEFAULT(0),
+
+    Low INT NOT NULL DEFAULT(0),
+
+    Info INT NOT NULL DEFAULT(0),
+
+    Total_Vulnerability INT NOT NULL DEFAULT(0),
+
+    Risk_Level VARCHAR(20) NOT NULL,
+
+    Created_Date DATETIME NOT NULL DEFAULT(GETDATE()),
+
+    Updated_Date DATETIME NULL
+);
+GO

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.png') }}">
+    <title>{% block title %}Admin{% endblock %} · Black Owl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-menu.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-audit.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-log-console.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-premium.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-settings.css') }}">
+</head>
+<body class="admin-page">
+    <div class="admin-shell">
+        <button class="admin-nav-toggle" type="button" aria-label="Buka navigasi" aria-expanded="false">☰</button>
+        <button class="admin-nav-backdrop" type="button" tabindex="-1" aria-label="Tutup navigasi"></button>
+        <aside class="admin-sidebar">
+            <a class="admin-brand" href="{{ url_for('auth.admin_dashboard') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Black Owl">
+                <span><strong>Black Owl</strong><small>IT Security Portal</small></span>
+            </a>
+            <div class="admin-profile">
+                <span class="admin-avatar">{{ session.user[0]|upper if session.user else 'A' }}</span>
+                <span><strong>{{ session.user or 'Administrator' }}</strong><small>Administrator</small></span><i aria-label="Online"></i>
+            </div>
+            <nav aria-label="Navigasi admin">
+                <a class="admin-nav-link {% if request.endpoint == 'auth.admin_dashboard' %}is-active{% endif %}" href="{{ url_for('auth.admin_dashboard') }}">Dashboard</a>
+                <a class="admin-nav-link {% if request.endpoint and request.endpoint.startswith('users.') and request.endpoint not in ('users.activity_logs', 'users.settings') %}is-active{% endif %}" href="{{ url_for('users.manage_users') }}">Kelola Users</a>
+                <a class="admin-nav-link {% if request.endpoint == 'users.activity_logs' %}is-active{% endif %}" href="{{ url_for('users.activity_logs') }}">Activity Logs</a>
+                <a class="admin-nav-link {% if request.endpoint == 'users.settings' %}is-active{% endif %}" href="{{ url_for('users.settings') }}">Settings</a>
+                <div class="admin-logout-section"><form method="POST" action="{{ url_for('auth.admin_logout') }}"><button class="admin-nav-link admin-logout" type="submit">Logout</button></form></div>
+            </nav>
+        </aside>
+        <main class="admin-main">
+            {% with messages = get_flashed_messages() %}{% if messages %}<div class="admin-alert" role="status">{{ messages[0] }}</div>{% endif %}{% endwith %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <script>
+    (() => {
+        const csrfToken = "{{ csrf_token() }}";
+        document.addEventListener('submit', (event) => {
+            const form = event.target;
+            if (!(form instanceof HTMLFormElement) || !['POST', 'PUT', 'PATCH', 'DELETE'].includes(form.method.toUpperCase())) return;
+            if (!form.querySelector('input[name="_csrf_token"]')) {
+                const input = document.createElement('input');
+                input.type = 'hidden'; input.name = '_csrf_token'; input.value = csrfToken;
+                form.appendChild(input);
+            }
+        }, true);
+        const sidebar = document.querySelector('.admin-sidebar');
+        const toggle = document.querySelector('.admin-nav-toggle');
+        const backdrop = document.querySelector('.admin-nav-backdrop');
+        const close = () => { sidebar.classList.remove('is-open'); document.body.classList.remove('admin-nav-open'); toggle.setAttribute('aria-expanded', 'false'); };
+        toggle.addEventListener('click', () => { const isOpen = sidebar.classList.toggle('is-open'); document.body.classList.toggle('admin-nav-open', isOpen); toggle.setAttribute('aria-expanded', String(isOpen)); });
+        backdrop.addEventListener('click', close);
+        window.addEventListener('resize', () => { if (window.innerWidth > 760) close(); });
+    })();
+    </script>
+</body>
+</html>

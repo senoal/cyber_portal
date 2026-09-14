@@ -1,0 +1,21 @@
+.admin-menu-access{display:grid;gap:8px;grid-column:1 / -1;margin:2px 0 0;padding:16px;border:1px solid rgba(244,200,74,.18);border-radius:11px;background:rgba(244,200,74,.035)}
+.admin-menu-access legend{padding:0 6px;color:#f8fafc;font-size:13px;font-weight:700}
+.admin-menu-access p{margin:0;color:#94a3b8;font-size:12px}
+.admin-menu-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.admin-menu-options label{display:flex;align-items:center;gap:8px;padding:9px 10px;color:#cbd5e1;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:#171c25;font-size:12px;cursor:pointer}
+.admin-menu-options input{accent-color:#f4c84a}
+@media(max-width:600px){.admin-menu-options{grid-template-columns:1fr}}
+
+/* Keep the admin sign-out control consistent with the user sidebar. */
+.admin-sidebar{height:100vh;min-height:0;overflow:hidden}
+.admin-sidebar nav{display:flex;flex:1;flex-direction:column;min-height:0;overflow-y:auto}
+.admin-logout-section{position:sticky;bottom:0;margin-top:16px;padding:16px 0 0;border-top:1px solid #2b3443;background:#141922}
+.admin-sidebar .admin-logout{margin:0;color:#cbd5e1;border:1px solid transparent;border-radius:10px}
+.admin-sidebar .admin-logout:hover{color:#fff;border-color:rgba(239,68,68,.28);background:rgba(239,68,68,.13)}
+.admin-sidebar .admin-logout:focus-visible{outline:0;border-color:#fca5a5;box-shadow:0 0 0 3px rgba(239,68,68,.16)}
+.admin-logout-section form{margin:0}.admin-logout-section button{width:100%;background:transparent;cursor:pointer;font-family:inherit;text-align:left}
+
+.admin-table .admin-level-admin{color:#fda4af;border-color:rgba(244,63,94,.32);background:rgba(244,63,94,.12)}
+.admin-table .admin-level-internal{color:#fde68a;border-color:rgba(244,200,74,.32);background:rgba(244,200,74,.12)}
+.admin-table .admin-level-eksternal{color:#93c5fd;border-color:rgba(59,130,246,.34);background:rgba(59,130,246,.14)}
+.admin-table .admin-level-unknown{color:#cbd5e1;border-color:rgba(148,163,184,.25);background:rgba(148,163,184,.1)}

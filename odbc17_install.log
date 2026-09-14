@@ -1,0 +1,9 @@
+﻿The `msstore` source requires that you view the following agreements before using.
+Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
+The source requires the current machine's 2-letter geographic region to be sent to the backend service to function properly (ex. "US").
+
+Failed when searching source: winget
+An unexpected error occurred while executing the command: 
+0x8a15000f : Data required by the source is missing
+
+No packages were found among the working sources.

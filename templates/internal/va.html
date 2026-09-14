@@ -1,0 +1,151 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+<section class="va-register-page">
+    <header class="va-register-header">
+        <div>
+            <span class="va-register-eyebrow">Security Operations</span>
+            <h2>VA Register</h2>
+            <p>Kelola, cari, dan pantau data Vulnerability Assessment dalam satu tempat.</p>
+        </div>
+        <a href="{{ url_for('va.create_va') }}" class="btn-add-va"><span aria-hidden="true">+</span> Tambah Data VA</a>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}<div class="alert-box">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
+
+    <section class="va-filter-card" aria-labelledby="filter-title">
+        <div class="va-filter-heading">
+            <div><span class="va-filter-eyebrow">REGISTER EXPLORER</span><h3 id="filter-title">Cari data assessment</h3><p>Gunakan filter untuk menemukan aset dan hasil pemindaian dengan lebih cepat.</p></div>
+            <div class="va-filter-summary"><span>Total records</span><strong>{{ total_records }}</strong><small>{% if has_filters %}{{ latest_data|length }} hasil filter{% elif show_all %}Seluruh records ditampilkan{% else %}Menampilkan data terbaru{% endif %}</small></div>
+        </div>
+        <form method="GET" class="va-register-filter-grid">
+            <div class="va-register-filter-field">
+                <label for="va-keyword">Cari aset</label>
+                <span>Cari berdasarkan nama aset, tipe, atau sumber pemindaian.</span>
+                <input id="va-keyword" type="text" name="keyword" placeholder="Contoh: Web App atau Nessus" value="{{ request.args.get('keyword','') }}">
+            </div>
+            <div class="va-register-filter-field">
+                <label for="va-risk">Tingkat risiko</label>
+                <span>Tampilkan data dengan tingkat risiko tertentu.</span>
+                <select id="va-risk" name="risk">
+                    <option value="">Semua risiko</option>
+                    {% for value in ['Critical', 'High', 'Medium', 'Low', 'Info'] %}<option value="{{ value }}" {% if request.args.get('risk') == value %}selected{% endif %}>{{ value }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="va-register-filter-field">
+                <label for="va-date-from">Tanggal mulai</label>
+                <span>Batas awal rentang tanggal pemindaian.</span>
+                <div class="date-picker-field">
+                    <input id="va-date-from" type="date" name="date_from" value="{{ request.args.get('date_from','') }}">
+                    <button class="date-picker-trigger" type="button" aria-label="Pilih tanggal mulai" title="Pilih tanggal mulai" data-date-picker="va-date-from">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="va-register-filter-field">
+                <label for="va-date-to">Tanggal akhir</label>
+                <span>Batas akhir rentang tanggal pemindaian.</span>
+                <div class="date-picker-field">
+                    <input id="va-date-to" type="date" name="date_to" value="{{ request.args.get('date_to','') }}">
+                    <button class="date-picker-trigger" type="button" aria-label="Pilih tanggal akhir" title="Pilih tanggal akhir" data-date-picker="va-date-to">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="va-filter-button-group">
+                <button type="submit" class="btn-filter">Filter</button>
+                <a href="{{ url_for('va.va_dashboard') }}" class="btn-reset va-filter-reset">Reset</a>
+                <a href="{{ url_for('va.va_dashboard', view='all') }}" class="va-show-all {% if show_all and not has_filters %}is-active{% endif %}">All Data <span>→</span></a>
+            </div>
+        </form>
+    </section>
+
+    <section class="va-data-card" aria-labelledby="latest-va-title">
+        <div class="va-data-heading"><div><h3 id="latest-va-title">Data Vulnerability Assessment</h3><p>{{ latest_data|length if latest_data else 0 }} data ditampilkan{% if has_filters %} berdasarkan filter aktif{% elif show_all %} dari seluruh records terdaftar{% else %} terbaru{% endif %}.</p></div></div>
+        <div class="table-wrapper">
+            <table class="user-table va-register-table">
+                <thead><tr><th>No.</th><th aria-sort="none"><button class="va-sort-button" type="button" data-sort-column="asset" data-sort-type="text">Asset <span aria-hidden="true">↕</span></button></th><th>Source</th><th>Type</th><th>Total Vuln.</th><th>Risk</th><th aria-sort="none"><button class="va-sort-button" type="button" data-sort-column="scan-date" data-sort-type="date">Scan Date <span aria-hidden="true">↕</span></button></th><th>Aksi</th></tr></thead>
+                <tbody>
+                    {% if latest_data and latest_data|length > 0 %}
+                        {% for row in latest_data %}
+                            <tr data-asset="{{ row.asset or '' }}" data-scan-date="{{ row.scan_date or '' }}">
+                                <td class="va-id">{{ ((page - 1) * per_page) + loop.index if show_all and not has_filters else loop.index }}</td><td class="va-asset">{{ row.asset }}</td><td class="text-truncate va-source">{{ row.source }}</td><td>{{ row.asset_type }}</td><td>{{ row.total }}</td>
+                                <td><span class="risk-badge risk-{{ row.risk_level|lower }}">{{ row.risk_level }}</span></td><td>{{ row.scan_date }}</td>
+                                <td class="va-actions"><a href="{{ url_for('va.view_va', va_id=row.va_id) }}" class="btn-view">Lihat</a><a href="{{ url_for('va.edit_va', va_id=row.va_id) }}" class="btn-edit">Edit</a><form method="POST" action="{{ url_for('va.delete_va', va_id=row.va_id) }}" class="va-delete-form"><button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</button></form></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="8" class="va-empty-state">Belum ada data Vulnerability Assessment yang tersedia.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {% if show_all and not has_filters and total_pages > 1 %}
+        <nav class="va-table-pagination" aria-label="Pagination data VA">
+            {% if page > 1 %}<a href="{{ url_for('va.va_dashboard', view='all', page=page-1) }}">← Previous</a>{% endif %}
+            <span>Page <strong>{{ page }}</strong> of {{ total_pages }}</span>
+            {% if page < total_pages %}<a href="{{ url_for('va.va_dashboard', view='all', page=page+1) }}">Next →</a>{% endif %}
+        </nav>
+        {% endif %}
+    </section>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('[data-date-picker]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+        const input = document.getElementById(trigger.dataset.datePicker);
+        if (!input) return;
+
+        input.focus();
+        if (typeof input.showPicker === 'function') {
+            input.showPicker();
+        } else {
+            input.click();
+        }
+    });
+});
+
+document.querySelectorAll('.va-sort-button').forEach((button) => {
+    button.addEventListener('click', () => {
+        const table = button.closest('table');
+        const body = table?.tBodies[0];
+        if (!body) return;
+
+        const rows = Array.from(body.querySelectorAll('tr[data-asset]'));
+        const column = button.dataset.sortColumn;
+        const datasetKey = column === 'scan-date' ? 'scanDate' : column;
+        const type = button.dataset.sortType;
+        const nextDirection = button.dataset.sortDirection === 'asc' ? 'desc' : 'asc';
+
+        rows.sort((left, right) => {
+            const leftValue = left.dataset[datasetKey] || '';
+            const rightValue = right.dataset[datasetKey] || '';
+            const comparison = type === 'date'
+                ? new Date(leftValue) - new Date(rightValue)
+                : leftValue.localeCompare(rightValue, undefined, { sensitivity: 'base' });
+            return nextDirection === 'asc' ? comparison : -comparison;
+        });
+
+        rows.forEach((row, index) => {
+            body.appendChild(row);
+            const number = row.querySelector('.va-id');
+            if (number) number.textContent = index + 1;
+        });
+
+        table.querySelectorAll('.va-sort-button').forEach((sortButton) => {
+            const isActive = sortButton === button;
+            sortButton.dataset.sortDirection = isActive ? nextDirection : '';
+            sortButton.classList.toggle('is-sorted', isActive);
+            sortButton.querySelector('span').textContent = isActive
+                ? (nextDirection === 'asc' ? '↑' : '↓')
+                : '↕';
+            sortButton.closest('th').setAttribute('aria-sort', isActive ? nextDirection + 'ending' : 'none');
+        });
+    });
+});
+</script>
+{% endblock %}

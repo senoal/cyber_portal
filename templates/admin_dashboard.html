@@ -1,0 +1,7 @@
+{% extends 'admin/layout.html' %}
+{% block title %}Dashboard Admin{% endblock %}
+{% block content %}
+<header class="admin-page-header"><div><p class="admin-eyebrow">Administration workspace</p><h1 class="admin-page-title">Admin Dashboard</h1><p class="admin-page-subtitle">Pusat kendali akses, pengguna, dan jejak audit Black Owl.</p></div></header>
+<section class="admin-card admin-welcome"><p class="admin-eyebrow">Secure administration</p><h2>Selamat datang, {{ session.user or 'Admin' }}</h2><p>Kelola akun pengguna, atur akses menu, dan pantau aktivitas sistem dari satu workspace yang terkontrol.</p><div class="admin-quick-links"><a class="admin-button admin-button-primary" href="{{ url_for('users.manage_users') }}">Kelola Users</a><a class="admin-button admin-button-secondary" href="{{ url_for('users.activity_logs') }}">Buka Activity Logs</a></div></section>
+<section class="admin-dashboard-guides" aria-label="Panduan administrasi"><article><span>01</span><div><strong>Kelola akses</strong><p>Atur level serta izin menu setiap pengguna.</p></div></article><article><span>02</span><div><strong>Audit aktivitas</strong><p>Telusuri login, navigasi, dan perubahan data.</p></div></article><article><span>03</span><div><strong>Arsip berkala</strong><p>Ekspor dan arsipkan log bulanan dengan aman.</p></div></article></section>
+{% endblock %}

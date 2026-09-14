@@ -1,0 +1,242 @@
+/* ==========================================================
+   SEC_APP Enterprise UI Framework
+   layout.css
+==========================================================*/
+
+
+/* ==========================================================
+   APP LAYOUT
+========================================================== */
+
+.app-wrapper{
+
+    display:flex;
+
+    width:100%;
+
+    min-height:100vh;
+
+    background:var(--bg);
+
+}
+
+
+/* ==========================================================
+   MAIN CONTENT
+========================================================== */
+
+.main-content{
+
+    flex:1;
+
+    min-width:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow-x:hidden;
+
+    overflow-y:auto;
+
+    padding:16px;
+
+    margin:0;
+
+}
+
+
+/* ==========================================================
+   CONTENT WRAPPER
+========================================================== */
+
+.content-wrapper{
+
+    width:100%;
+
+    margin:0;
+
+    padding:0;
+
+    max-width:100%;
+
+}
+
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.page-title{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+.page-subtitle{
+
+    margin-top:4px;
+
+    font-size:14px;
+
+    color:var(--text-muted);
+
+}
+
+
+/* ==========================================================
+   SECTION
+========================================================== */
+
+.section{
+
+    margin-bottom:20px;
+
+}
+
+
+/* ==========================================================
+   GRID
+========================================================== */
+
+.grid{
+
+    display:grid;
+
+    gap:20px;
+
+}
+
+.grid-2{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:20px;
+
+}
+
+.grid-3{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,minmax(0,1fr));
+
+    gap:20px;
+
+}
+
+.grid-4{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,minmax(0,1fr));
+
+    gap:20px;
+
+}
+
+
+/* ==========================================================
+   FLEX
+========================================================== */
+
+.flex{
+
+    display:flex;
+
+}
+
+.flex-between{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.flex-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1200px){
+
+    .grid-4{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+    .grid-3{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:992px){
+
+    .main-content{
+
+        padding:14px;
+
+    }
+
+    .page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:12px;
+
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .main-content{
+
+        padding:12px;
+
+    }
+
+}

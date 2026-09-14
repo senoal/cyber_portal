@@ -1,0 +1,1782 @@
+/* ==========================================================
+   SEC_APP Enterprise UI Framework
+   dashboard.css
+   Executive Dashboard System
+========================================================== */
+
+
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.dashboard-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:24px;
+
+    margin-bottom:32px;
+
+}
+
+.dashboard-title{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:6px;
+
+}
+
+.dashboard-subtitle{
+
+    color:var(--text-muted);
+
+    font-size:14px;
+
+}
+
+.dashboard-action{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+}
+
+
+/* ==========================================================
+   KPI GRID
+========================================================== */
+
+.kpi-grid{
+
+    display:grid;
+
+    /* Keep all six summary cards balanced on wide screens.  Explicit tracks
+       prevent the last card from becoming an isolated row at intermediate
+       viewport widths. */
+    grid-template-columns:repeat(6,minmax(0,1fr));
+
+    gap:clamp(12px,1.4vw,20px);
+
+    margin-bottom:30px;
+
+    align-items:stretch;
+
+}
+
+
+/* ==========================================================
+   KPI CARD
+========================================================== */
+
+.kpi-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:linear-gradient(
+        180deg,
+        var(--bg-card),
+        var(--bg-surface)
+    );
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    min-width:0;
+
+    min-height:132px;
+
+    padding:clamp(16px,1.6vw,22px);
+
+    transition:var(--transition);
+
+}
+
+.kpi-card.high-card::before{
+
+    background:var(--high);
+
+}
+
+.kpi-card.medium-card::before{
+
+    background:var(--medium);
+
+}
+
+.kpi-card.low-card::before{
+
+    background:var(--low);
+
+}
+
+.kpi-card.critical-card::before{
+
+    background:var(--critical);
+
+}
+
+.kpi-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--border-light);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.kpi-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:4px;
+
+    height:100%;
+
+    background:var(--color-primary);
+
+}
+
+.kpi-title{
+
+    font-size:clamp(12px,0.9vw,13px);
+
+    color:var(--text-muted);
+
+    margin-bottom:12px;
+
+}
+
+.kpi-value{
+
+    font-size:clamp(30px,2.6vw,38px);
+
+    font-weight:700;
+
+    color:var(--text);
+
+    line-height:1;
+
+}
+
+.kpi-description{
+
+    margin-top:12px;
+
+    font-size:12px;
+
+    color:var(--text-muted);
+
+}
+
+
+/* ==========================================================
+   RISK COLOR
+========================================================== */
+
+.kpi-card.critical::before{
+
+    background:var(--critical);
+
+}
+
+.kpi-card.high::before{
+
+    background:var(--high);
+
+}
+
+.kpi-card.medium::before{
+
+    background:var(--medium);
+
+}
+
+.kpi-card.low::before{
+
+    background:var(--low);
+
+}
+
+
+/* ==========================================================
+   CHART GRID
+========================================================== */
+
+.chart-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,minmax(0,1fr));
+
+    gap:24px;
+
+    margin-bottom:30px;
+
+    align-items:stretch;
+
+}
+
+.chart-grid > *{
+
+    min-width:0;
+
+}
+/* ------------------- bagian 2
+/* ==========================================================
+   CHART CARD
+========================================================== */
+
+.chart-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    height:420px;
+
+    transition:var(--transition);
+
+}
+
+.chart-card:hover{
+
+    border-color:var(--border-light);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.chart-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 20px;
+
+    border-bottom:1px solid var(--border);
+
+    flex-shrink:0;
+
+}
+
+.chart-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+    margin:0;
+
+}
+
+.chart-subtitle{
+
+    margin-top:4px;
+
+    font-size:12px;
+
+    color:var(--text-muted);
+
+}
+
+.chart-body{
+
+    flex:1;
+
+    position:relative;
+
+    padding:18px;
+
+    min-height:0;
+
+    overflow:hidden;
+
+}
+
+.chart-body canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
+}
+
+
+/* ==========================================================
+   ANALYSIS GRID
+========================================================== */
+
+.analysis-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        1.35fr;
+
+    gap:24px;
+
+    margin-top:30px;
+
+    align-items:stretch;
+
+}
+
+
+/* ==========================================================
+   TABLE CARD
+========================================================== */
+
+.table-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    height:420px;
+
+    transition:var(--transition);
+
+}
+
+.table-card:hover{
+
+    border-color:var(--border-light);
+
+    box-shadow:var(--shadow-md);
+
+}
+
+.table-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:18px 20px;
+
+    border-bottom:1px solid var(--border);
+
+    flex-shrink:0;
+
+}
+
+.table-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+    margin:0;
+
+}
+
+.table-body{
+
+    flex:1;
+
+    padding:16px;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+}
+
+
+/* ==========================================================
+   TABLE SCROLLBAR
+========================================================== */
+
+.table-body::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.table-body::-webkit-scrollbar-thumb{
+
+    background:#39465a;
+
+    border-radius:999px;
+
+}
+
+.table-body::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+/* ---------------- bagian 3
+/* ==========================================================
+   DASHBOARD TABLE
+========================================================== */
+
+.dashboard-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    table-layout:auto;
+
+    font-size:13px;
+
+}
+
+.dashboard-table thead{
+
+    position:sticky;
+
+    top:0;
+
+    background:var(--bg-card);
+
+    z-index:1;
+
+}
+
+.dashboard-table th{
+
+    padding:12px;
+
+    text-align:left;
+
+    font-weight:600;
+
+    color:var(--text);
+
+    border-bottom:1px solid var(--border);
+
+    white-space:nowrap;
+
+}
+
+.dashboard-table td{
+
+    padding:11px 12px;
+
+    color:var(--text-muted);
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    vertical-align:middle;
+
+    overflow-wrap:anywhere;
+
+    word-break:break-word;
+
+}
+
+.source-column{
+
+    max-width:220px;
+
+    white-space:normal;
+
+    overflow-wrap:anywhere;
+
+    word-break:break-word;
+/*  */
+    line-height:1.4;
+
+}
+
+.dashboard-table th:nth-child(1),
+.dashboard-table td:nth-child(1){
+
+    width:45px;
+
+    text-align:center;
+
+}
+
+.dashboard-table th:nth-child(2),
+.dashboard-table td:nth-child(2){
+
+    width:30%;
+
+}
+
+.dashboard-table th:nth-child(3),
+.dashboard-table td:nth-child(3){
+
+    width:35%;
+
+}
+
+.dashboard-table th:nth-child(4),
+.dashboard-table td:nth-child(4){
+
+    width:80px;
+
+    text-align:center;
+
+}
+
+.dashboard-table th:nth-child(5),
+.dashboard-table td:nth-child(5){
+
+    width:100px;
+
+    text-align:center;
+
+}
+
+.dashboard-table tbody tr{
+
+    transition:var(--transition);
+
+}
+
+.dashboard-table tbody tr:hover{
+
+    background:rgba(255,255,255,.04);
+
+}
+
+.dashboard-table td:first-child{
+
+    width:45px;
+
+    text-align:center;
+
+    font-weight:600;
+
+}
+
+
+/* ==========================================================
+   RISK BADGE
+========================================================== */
+
+.risk-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:72px;
+
+    height:26px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:600;
+
+}
+
+.risk-badge.high{
+
+    background:rgba(255,77,79,.15);
+
+    color:#ff6b6b;
+
+}
+
+.risk-badge.medium{
+
+    background:rgba(255,215,0,.15);
+
+    color:#ffd54d;
+
+}
+
+.risk-badge.low{
+
+    background:rgba(82,196,26,.15);
+
+    color:#7CFC7C;
+
+}
+
+
+/* ==========================================================
+   DASHBOARD FOOTER
+========================================================== */
+
+.dashboard-footer{
+
+    margin-top:32px;
+
+    padding-top:24px;
+
+    border-top:1px solid var(--border);
+
+}
+
+.dashboard-footer-info{
+
+    background:var(--bg-card);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:18px 20px;
+
+    color:var(--text-muted);
+
+    line-height:1.8;
+
+}
+
+.dashboard-footer-bottom{
+
+    margin-top:18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-size:12px;
+
+    color:var(--text-disabled);
+
+}
+
+
+/* ==========================================================
+   QUICK STATS
+========================================================== */
+
+.quick-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+
+    gap:18px;
+
+}
+
+.quick-stat{
+
+    padding:18px;
+
+    border-radius:16px;
+
+    background:var(--bg-surface);
+
+    border:1px solid var(--border);
+
+}
+
+.quick-stat-title{
+
+    font-size:12px;
+
+    color:var(--text-muted);
+
+}
+
+.quick-stat-value{
+
+    margin-top:8px;
+
+    font-size:24px;
+
+    font-weight:700;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1400px){
+
+    .analysis-grid{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+    .analysis-grid > :last-child{
+
+        grid-column:1 / -1;
+
+    }
+
+}
+
+/* At higher browser zoom levels the available dashboard area becomes
+   narrower. Switch to a complete 3 by 2 grid instead of leaving one card
+   alone on a second row. */
+@media(max-width:1280px){
+
+    .kpi-grid{
+
+        grid-template-columns:repeat(3,minmax(0,1fr));
+
+    }
+
+}
+
+@media(max-width:1200px){
+
+    .dashboard-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .chart-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .analysis-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .dashboard-footer-bottom{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:10px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .dashboard-title{
+
+        font-size:24px;
+
+    }
+
+    .kpi-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .kpi-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+/* --------------------------------bagian 4
+/* ==========================================================
+   FILTER PANEL
+========================================================== */
+
+.dashboard-filter{
+
+    margin-bottom:28px;
+
+    padding:20px 22px;
+
+    background:linear-gradient(135deg, var(--bg-card), var(--bg-surface));
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow-xs);
+
+}
+
+
+/* ==========================================================
+   PENTEST TABLE ACTIONS
+========================================================== */
+
+.pentest-action-column,
+.pentest-action-cell{
+
+    width:1%;
+
+    white-space:nowrap;
+
+}
+
+.pentest-action-cell{
+
+    text-align:center;
+
+}
+
+.pentest-actions{
+
+    display:flex;
+
+    flex-wrap:nowrap;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    min-width:max-content;
+
+}
+
+.pentest-delete-form{
+
+    display:flex;
+
+    margin:0;
+
+}
+
+.pentest-actions .btn-view,
+.pentest-actions .btn-edit,
+.pentest-actions .btn-delete{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-height:36px;
+
+    padding:0 12px;
+
+    margin:0;
+
+    border:1px solid transparent;
+
+    border-radius:8px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    line-height:1;
+
+    transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+
+}
+
+.pentest-actions .btn-view{
+
+    background:#1e88e5;
+
+}
+
+.pentest-actions .btn-edit{
+
+    background:#3a4658;
+
+}
+
+.pentest-actions .btn-delete{
+
+    background:#d32f2f;
+
+    cursor:pointer;
+
+}
+
+.pentest-actions .btn-view:hover,
+.pentest-actions .btn-edit:hover,
+.pentest-actions .btn-delete:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+
+}
+
+.pentest-actions .btn-view:hover{
+
+    background:#1976d2;
+
+}
+
+.pentest-actions .btn-edit:hover{
+
+    background:#536174;
+
+}
+
+.pentest-actions .btn-delete:hover{
+
+    background:#b71c1c;
+
+}
+
+.pentest-locked{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    min-height:36px;
+
+    padding:0 12px;
+
+    border:1px solid var(--border);
+
+    border-radius:8px;
+
+    color:var(--text-muted);
+
+    font-size:12px;
+
+}
+
+.form-hint{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:var(--text-muted);
+
+    font-size:12px;
+
+    line-height:1.4;
+
+}
+
+.attachment-file-link{
+
+    color:var(--text);
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    overflow-wrap:anywhere;
+
+}
+
+.attachment-file-link:hover{
+
+    color:var(--color-primary);
+
+    text-decoration:underline;
+
+}
+
+.attachment-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    max-width:620px;
+
+    padding:14px;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg, rgba(255,215,0,.08), var(--bg-card));
+
+}
+
+.attachment-card br{
+
+    display:none;
+
+}
+
+.attachment-file-icon{
+
+    display:grid;
+
+    place-items:center;
+
+    flex:0 0 48px;
+
+    width:48px;
+
+    height:48px;
+
+    padding:4px;
+
+    border:1px solid rgba(255,215,0,.35);
+
+    border-radius:10px;
+
+    background:rgba(255,215,0,.12);
+
+    color:var(--color-primary);
+
+    font-size:10px;
+
+    font-weight:800;
+
+    letter-spacing:.05em;
+
+}
+
+.attachment-card .attachment-file-link{
+
+    display:block;
+
+    min-width:0;
+
+    line-height:1.4;
+
+}
+
+.attachment-card small{
+
+    display:none;
+
+}
+
+.attachment-content{
+
+    display:flex;
+
+    flex:1 1 0;
+
+    min-width:0;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+.attachment-eyebrow{
+
+    color:var(--text-muted);
+
+    font-size:10px;
+
+    font-weight:700;
+
+    letter-spacing:.07em;
+
+    text-transform:uppercase;
+
+}
+
+.attachment-meta{
+
+    display:flex;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    color:var(--text-muted);
+
+    font-size:12px;
+
+}
+
+.attachment-meta span + span::before{
+
+    content:"";
+
+    display:inline-block;
+
+    width:4px;
+
+    height:4px;
+
+    margin:0 8px 2px 0;
+
+    border-radius:50%;
+
+    background:var(--color-primary);
+
+}
+
+.btn-download{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-height:38px;
+
+    padding:0 13px;
+
+    border:1px solid var(--color-primary);
+
+    border-radius:8px;
+
+    background:var(--color-primary);
+
+    color:#17130a;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    white-space:nowrap;
+
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+
+}
+
+.btn-download:hover{
+
+    background:#ffe15a;
+
+    color:#17130a;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 5px 16px rgba(255,215,0,.2);
+
+}
+
+@media(max-width:768px){
+
+    .pentest-actions{
+
+        min-width:0;
+
+        flex-wrap:nowrap;
+
+    }
+
+    .pentest-action-cell{
+
+        padding-inline:8px !important;
+
+    }
+
+    .attachment-card{
+
+        align-items:flex-start;
+
+        flex-wrap:wrap;
+
+    }
+
+    .attachment-content{
+
+        flex-basis:calc(100% - 62px);
+
+    }
+
+    .btn-download{
+
+        width:100%;
+
+    }
+
+}
+
+.filter-row{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(160px,1fr))
+        auto;
+
+    gap:16px;
+
+    align-items:end;
+
+}
+
+.filter-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.filter-group label{
+
+    margin-bottom:8px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    color:var(--text-muted);
+
+    letter-spacing:.06em;
+
+    text-transform:uppercase;
+
+}
+
+.filter-group input,
+.filter-group select{
+
+    width:100%;
+
+    height:46px;
+
+    padding:0 14px;
+
+    background:rgba(15,17,23,.72);
+
+    border:1px solid var(--border-light);
+
+    border-radius:10px;
+
+    color:var(--text);
+
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+
+    outline:none;
+
+    transition:border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+
+}
+
+.filter-group input:hover,
+.filter-group select:hover{
+
+    background:var(--bg-surface-2);
+
+    border-color:#4a596e;
+
+}
+
+.filter-group input:focus,
+.filter-group select:focus{
+
+    background:var(--bg-surface-2);
+
+    border-color:var(--color-primary);
+
+    box-shadow:0 0 0 3px var(--color-primary-soft);
+
+}
+
+.filter-group input[type="date"]{
+
+    color-scheme:dark;
+
+}
+
+.date-picker-field{
+
+    position:relative;
+
+}
+
+.date-picker-field input[type="date"]{
+
+    padding-right:54px;
+
+}
+
+/* Larger calendar affordance; it opens the native browser date picker. */
+.date-picker-field input[type="date"]::-webkit-calendar-picker-indicator{
+
+    position:absolute;
+
+    right:0;
+
+    width:54px;
+
+    height:100%;
+
+    margin:0;
+
+    opacity:0;
+
+    cursor:pointer;
+
+}
+
+.date-picker-trigger{
+
+    position:absolute;
+
+    top:50%;
+
+    right:7px;
+
+    display:grid;
+
+    width:34px;
+
+    height:34px;
+
+    place-items:center;
+
+    padding:0;
+
+    border:1px solid rgba(244,200,74,.42);
+
+    border-radius:8px;
+
+    background:rgba(244,200,74,.12);
+
+    color:#f6d66c;
+
+    cursor:pointer;
+
+    transform:translateY(-50%);
+
+    transition:background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+
+}
+
+.date-picker-trigger svg{
+
+    width:18px;
+
+    height:18px;
+
+    fill:none;
+
+    stroke:currentColor;
+
+    stroke-linecap:round;
+
+    stroke-linejoin:round;
+
+    stroke-width:1.8;
+
+}
+
+.date-picker-trigger:hover,
+.date-picker-trigger:focus-visible{
+
+    border-color:#f8d55e;
+
+    background:rgba(244,200,74,.22);
+
+    color:#fff0a3;
+
+    outline:none;
+
+    box-shadow:0 0 0 3px rgba(244,200,74,.14);
+
+}
+
+.date-picker-field input[type="date"]:focus + .date-picker-trigger{
+
+    border-color:var(--color-primary);
+
+    color:#fff0a3;
+
+}
+
+.filter-group select{
+
+    appearance:none;
+
+    padding-right:42px;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23F4C84A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+
+    background-position:right 14px center;
+
+}
+
+.filter-group select option{
+
+    background:var(--bg-surface-2);
+
+    color:var(--text);
+
+}
+
+.filter-action{
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:flex-end;
+
+}
+
+.filter-action .btn-filter,
+.filter-action .btn-reset{
+
+    min-width:96px;
+
+    height:46px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:.01em;
+
+}
+
+.dashboard-filter .btn-filter{
+
+    background:linear-gradient(135deg, var(--color-primary), #e6b931);
+
+    color:#17130a;
+
+    box-shadow:0 7px 16px rgba(244,200,74,.18);
+
+}
+
+.dashboard-filter .btn-filter:hover{
+
+    background:linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
+
+    transform:translateY(-1px);
+
+    box-shadow:0 9px 20px rgba(244,200,74,.28);
+
+}
+
+.dashboard-filter .btn-reset{
+
+    background:rgba(255,255,255,.045);
+
+    border:1px solid var(--border-light);
+
+    color:var(--text-soft);
+
+}
+
+.dashboard-filter .btn-reset:hover{
+
+    background:var(--bg-hover);
+
+    border-color:#4a596e;
+
+    color:var(--text);
+
+    transform:translateY(-1px);
+
+}
+
+/* ==========================================================
+   GENERATE REPORT BUTTON
+========================================================== */
+
+.dashboard-filter .btn-report{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:130px;
+
+    height:46px;
+
+    padding:0 16px;
+
+    border-radius:10px;
+
+    background:#1f2937;
+
+    border:1px solid var(--color-primary);
+
+    color:var(--color-primary);
+
+    font-size:13px;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    white-space:nowrap;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+.dashboard-filter .btn-report:hover{
+
+    background:var(--color-primary);
+
+    color:#17130a;
+
+    border-color:var(--color-primary);
+
+    transform:translateY(-1px);
+
+    box-shadow:
+        0 7px 18px
+        rgba(244,200,74,.22);
+
+}
+
+
+/* ==========================================================
+   RISK DISTRIBUTION
+========================================================== */
+
+.risk-wrapper{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:28px;
+
+    width:100%;
+
+    height:100%;
+
+}
+
+.chart-container{
+
+    flex:1;
+
+    position:relative;
+
+    min-width:0;
+
+    height:100%;
+
+}
+
+.risk-legend{
+
+    width:190px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+.risk-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+
+    color:var(--text);
+
+    font-size:13px;
+
+}
+
+.risk-item:hover{
+
+    color:var(--color-primary);
+
+}
+
+.risk-item.disabled{
+
+    opacity:.35;
+
+}
+
+.dot-high,
+.dot-medium,
+.dot-low{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    flex-shrink:0;
+
+}
+
+.dot-high{
+
+    background:#ff4d4f;
+
+}
+
+.dot-medium{
+
+    background:#FFD700;
+
+}
+
+.dot-low{
+
+    background:#52c41a;
+
+}
+
+
+/* ==========================================================
+   SEVERITY CHART
+========================================================== */
+
+.severity-chart{
+
+    position:relative;
+
+    width:100%;
+
+    height:100%;
+
+    min-height:340px;
+
+}
+
+.severity-chart canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
+}
+
+
+/* ==========================================================
+   FILTER RESPONSIVE
+========================================================== */
+
+@media(max-width:1400px){
+
+    .filter-row{
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+    }
+
+}
+
+@media(max-width:992px){
+
+    .filter-row{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+    .filter-action{
+
+        grid-column:1 / -1;
+
+        justify-content:flex-start;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .risk-wrapper{
+
+        flex-direction:column;
+
+    }
+
+    .risk-legend{
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .filter-row{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

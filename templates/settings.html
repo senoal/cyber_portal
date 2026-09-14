@@ -1,0 +1,36 @@
+{% extends 'admin/layout.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<header class="admin-page-header">
+    <div>
+        <p class="admin-eyebrow">Application control</p>
+        <h1 class="admin-page-title">Settings</h1>
+        <p class="admin-page-subtitle">Atur kebijakan penggunaan aplikasi yang berlaku untuk seluruh pengguna.</p>
+    </div>
+</header>
+
+<section class="admin-card admin-settings-card">
+    <div class="admin-settings-heading">
+        <span class="admin-settings-mark">S</span>
+        <div>
+            <h2>Durasi Sesi User</h2>
+            <p>Pengguna akan logout otomatis apabila tidak ada aktivitas selama durasi yang ditetapkan.</p>
+        </div>
+    </div>
+
+    <form method="POST" class="admin-settings-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <label for="session_idle_timeout_minutes">Durasi idle sesi <span>(menit)</span></label>
+        <div class="admin-timeout-control">
+            <input id="session_idle_timeout_minutes" name="session_idle_timeout_minutes" type="number" min="1" step="1" inputmode="numeric" value="{{ session_idle_timeout_minutes }}" required>
+            <span>menit</span>
+        </div>
+        <p class="admin-settings-note">Minimal 1 menit. Perubahan diterapkan pada request pengguna berikutnya, termasuk sesi admin yang sedang aktif.</p>
+        <div class="admin-form-actions">
+            <button class="admin-button admin-button-primary" type="submit">Simpan Pengaturan</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

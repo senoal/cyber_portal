@@ -1,0 +1,253 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+
+<div class="topbar">
+    <h2>Edit Vulnerability Assessment</h2>
+</div>
+
+<div class="content-box">
+
+    <div style="margin-bottom:20px;">
+
+        <a
+            href="{{ url_for('va.va_dashboard') }}"
+            class="btn-back">
+
+            ← Kembali
+
+        </a>
+
+    </div>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data">
+
+        <div class="form-group">
+
+            <label>Scan Date</label>
+
+            <input
+                type="date"
+                name="scan_date"
+                value="{{ data.Scan_Date }}"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Asset</label>
+
+            <input
+                type="text"
+                name="asset"
+                value="{{ data.Asset }}"
+                required>
+
+        </div>
+
+        <div class="form-group">
+            <label>Source</label>
+            <input
+                type="text"
+                name="source"
+                class="form-control"
+                value="{{ data.Source }}"
+                required>
+        </div>
+
+        <div class="form-group">
+
+            <label>Asset Type</label>
+
+            {% set asset_types = ['Web App', 'Server', 'Database', 'Middleware', 'Mobile'] %}
+            <select name="asset_type" required>
+                {% if data.Asset_Type and data.Asset_Type not in asset_types %}
+                <option value="{{ data.Asset_Type }}" selected>{{ data.Asset_Type }}</option>
+                {% endif %}
+                {% for asset_type in asset_types %}
+                <option value="{{ asset_type }}" {% if data.Asset_Type == asset_type %}selected{% endif %}>
+                    {{ asset_type }}
+                </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Critical</label>
+
+            <input
+                type="number"
+                name="critical"
+                value="{{ data.Critical }}">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>High</label>
+
+            <input
+                type="number"
+                name="high"
+                value="{{ data.High }}">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Medium</label>
+
+            <input
+                type="number"
+                name="medium"
+                value="{{ data.Medium }}">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Low</label>
+
+            <input
+                type="number"
+                name="low"
+                value="{{ data.Low }}">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Info</label>
+
+            <input
+                type="number"
+                name="info"
+                value="{{ data.Info }}">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Risk Level</label>
+
+            <select name="risk_level">
+
+                <option value="Critical"
+                {% if data.Risk_Level == 'Critical' %}selected{% endif %}>
+                Critical
+                </option>
+
+                <option value="High"
+                {% if data.Risk_Level == 'High' %}selected{% endif %}>
+                High
+                </option>
+
+                <option value="Medium"
+                {% if data.Risk_Level == 'Medium' %}selected{% endif %}>
+                Medium
+                </option>
+
+                <option value="Low"
+                {% if data.Risk_Level == 'Low' %}selected{% endif %}>
+                Low
+                </option>
+
+                <option value="Info"
+                {% if data.Risk_Level == 'Info' %}selected{% endif %}>
+                Info
+                </option>
+
+            </select>
+
+        </div>
+
+        <hr>
+
+        <h4 style="margin-top:20px;">
+            Attachment
+        </h4>
+
+        {% if attachment %}
+
+        <div class="form-group">
+
+            <label>Current Attachment</label>
+
+            <div class="attachment-box">
+
+                <strong>
+                    {{ attachment.File_Original_Name }}
+                </strong>
+
+                <br>
+
+                <small>
+
+                    {{ attachment.File_Type|upper }}
+
+                    •
+
+                    {{ (attachment.File_Size / 1024)|round(2) }}
+                    KB
+
+                </small>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="form-group">
+
+            <label>Current Attachment</label>
+
+            <div class="attachment-box">
+
+                <span style="color:#888;">
+                    No attachment uploaded.
+                </span>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div class="form-group">
+
+            <label>Replace Attachment</label>
+
+            <input
+                type="file"
+                name="attachment"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg">
+
+            <small class="form-note">
+
+                Kosongkan jika tidak ingin mengganti attachment.
+
+            </small>
+
+        </div>
+
+        <br>
+
+        <button
+            type="submit"
+            class="btn-import">
+
+            Simpan Perubahan
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

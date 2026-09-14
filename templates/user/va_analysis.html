@@ -1,0 +1,945 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+
+<div id="pdf-content">
+
+<div class="page-header va-dashboard-hero">
+
+    <div>
+
+        <h1 class="page-title">
+            VA Dashboard
+        </h1>
+
+        <div class="page-subtitle">
+            Analisis dan reporting Vulnerability Assessment
+        </div>
+
+    </div>
+
+    <div class="va-threat-visual" aria-hidden="true">
+        <span class="va-threat-grid"></span>
+        <span class="va-threat-orbit va-threat-orbit--one"></span>
+        <span class="va-threat-orbit va-threat-orbit--two"></span>
+        <span class="va-threat-sweep"></span>
+        <span class="va-threat-node va-threat-node--one"></span>
+        <span class="va-threat-node va-threat-node--two"></span>
+        <span class="va-threat-core"></span>
+        <span class="va-threat-label">VA INSIGHTS</span>
+    </div>
+
+</div>
+<div class="content-wrapper">
+
+{% if db_error %}
+<div class="va-db-notice" role="status">
+    <strong>Database sementara tidak dapat dihubungi.</strong>
+    <span>{{ db_error }}</span>
+</div>
+{% endif %}
+
+<!-- FILTER PANEL -->
+{% if not pdf_mode %}
+<div class="dashboard-filter">
+
+    <form method="GET"
+      action="{{ url_for('user.va_analysis') }}">
+
+        <div class="filter-row">
+
+            <div class="filter-group">
+                <label for="date-from">Date From</label>
+                <div class="date-picker-field">
+                    <input
+                        id="date-from"
+                        type="date"
+                        name="date_from"
+                        value="{{ request.args.get('date_from', '') }}"
+                    >
+                    <button class="date-picker-trigger" type="button" aria-label="Pilih tanggal mulai" title="Pilih tanggal mulai" data-date-picker="date-from">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="date-to">Date To</label>
+                <div class="date-picker-field">
+                    <input
+                        id="date-to"
+                        type="date"
+                        name="date_to"
+                        value="{{ request.args.get('date_to', '') }}"
+                    >
+                    <button class="date-picker-trigger" type="button" aria-label="Pilih tanggal akhir" title="Pilih tanggal akhir" data-date-picker="date-to">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M16 3v4M8 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Asset Type</label>
+
+                <select name="asset_type">
+
+                    <option value=""
+                        {% if request.args.get('asset_type','') == '' %}
+                        selected
+                        {% endif %}>
+                        All
+                    </option>
+
+                    <option value="Web App"
+                        {% if request.args.get('asset_type') == 'Web App' %}
+                        selected
+                        {% endif %}>
+                        Web App
+                    </option>
+
+                    <option value="Server"
+                        {% if request.args.get('asset_type') == 'Server' %}
+                        selected
+                        {% endif %}>
+                        Server
+                    </option>
+
+                    <option value="Database"
+                        {% if request.args.get('asset_type') == 'Database' %}
+                        selected
+                        {% endif %}>
+                        Database
+                    </option>
+
+                    <option value="Middleware"
+                        {% if request.args.get('asset_type') == 'Middleware' %}
+                        selected
+                        {% endif %}>
+                        Middleware
+                    </option>
+
+                    <option value="Mobile"
+                        {% if request.args.get('asset_type') == 'Mobile' %}
+                        selected
+                        {% endif %}>
+                        Mobile
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Risk Level</label>
+
+                <select name="risk_level">
+
+                    <option value=""
+                        {% if request.args.get('risk_level','') == '' %}
+                        selected
+                        {% endif %}>
+                        All
+                    </option>
+
+                    <option value="High"
+                        {% if request.args.get('risk_level') == 'High' %}
+                        selected
+                        {% endif %}>
+                        High
+                    </option>
+
+                    <option value="Medium"
+                        {% if request.args.get('risk_level') == 'Medium' %}
+                        selected
+                        {% endif %}>
+                        Medium
+                    </option>
+
+                    <option value="Low"
+                        {% if request.args.get('risk_level') == 'Low' %}
+                        selected
+                        {% endif %}>
+                        Low
+                    </option>
+
+                </select>
+            </div>
+                <div class="filter-action">
+
+                    <button type="submit" class="btn-filter">
+                        Filter
+                    </button>
+
+                    <a href="{{ url_for('user.va_analysis') }}"
+                    class="btn-reset">
+                        Reset
+                    </a>
+
+                    <a
+                        href="{{ url_for('pdf_bp.va_report',
+                                        date_from=request.args.get('date_from', ''),
+                                        date_to=request.args.get('date_to', ''),
+                                        asset_type=request.args.get('asset_type', ''),
+                                        risk_level=request.args.get('risk_level', '')) }}"
+                        class="btn-report"
+                        target="_blank"
+                    >
+                        Generate Report
+                    </a>
+
+                </div>
+
+        </div>
+
+
+
+    </form>
+
+</div>
+{% endif %}
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="content-box">
+
+<!-- KPI CARDS -->
+    {% if summary %}
+
+    <div class="kpi-grid">
+
+        <div class="kpi-card">
+            <div class="kpi-title">Total Asset</div>
+            <div class="kpi-value">
+                {{ summary['total_asset'] }}
+            </div>
+        </div>
+
+
+        <div class="kpi-card">
+            <div class="kpi-title">Total Vulnerability</div>
+            <div class="kpi-value">
+                {{ summary['total_vulnerability'] }}
+            </div>
+        </div>
+
+        <div class="kpi-card critical-card">
+            <div class="kpi-title">Critical</div>
+            <div class="kpi-value">
+                {{ summary['critical'] }}
+            </div>
+        </div>
+
+        <div class="kpi-card high-card">
+            <div class="kpi-title">High</div>
+            <div class="kpi-value">
+                {{ summary['high'] }}
+            </div>
+        </div>
+
+        <div class="kpi-card medium-card">
+            <div class="kpi-title">Medium</div>
+            <div class="kpi-value">
+                {{ summary['medium'] }}
+            </div>
+        </div>
+
+        <div class="kpi-card low-card">
+            <div class="kpi-title">Low</div>
+            <div class="kpi-value">
+                {{ summary['low'] }}
+            </div>
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- RISK DISTRIBUTION -->
+<div class="chart-grid">
+
+    <!-- Risk Distribution -->
+    <div class="chart-card">
+
+        <div class="chart-header">
+            <h3 class="chart-title">Risk Distribution</h3>
+        </div>
+
+        <div class="chart-body">
+
+            <div class="risk-wrapper">
+
+            <div class="chart-container">
+                <canvas id="riskChart"></canvas>
+            </div>
+
+            <div class="risk-legend">
+
+                <div class="risk-item" data-index="0">
+                    <span class="dot-high"></span>
+                    High {{ risk_distribution["High"] }}
+                    ({{ risk_distribution["High_Pct"] }}%)
+                </div>
+
+                <div class="risk-item" data-index="1">
+                    <span class="dot-medium"></span>
+                    Medium {{ risk_distribution["Medium"] }}
+                    ({{ risk_distribution["Medium_Pct"] }}%)
+                </div>
+
+                <div class="risk-item" data-index="2">
+                    <span class="dot-low"></span>
+                    Low {{ risk_distribution["Low"] }}
+                    ({{ risk_distribution["Low_Pct"] }}%)
+                </div>
+
+            </div>
+
+        </div>
+        </div>
+
+    </div>
+
+
+    <!-- Vulnerability Trend -->
+    <div class="chart-card">
+
+        <div class="chart-header">
+            <h3 class="chart-title">Vulnerability Trend</h3>
+        </div>
+
+            <div class="chart-body">
+
+                <canvas id="trendChart"></canvas>
+
+            </div>
+
+    </div>
+
+    <div class="chart-card">
+
+        <div class="chart-header">
+            <h3 class="chart-title">Vulnerability by Asset Type</h3>
+        </div>
+
+            <div class="chart-body">
+
+                <canvas id="assetChart"></canvas>
+
+            </div>
+
+    </div>
+
+</div>
+
+<div class="analysis-grid">
+
+
+
+<div class="table-card">
+
+    <div class="table-header">
+        <h3 class="table-title">Top 5 Asset by Risk Score</h3>
+    </div>
+
+    <table class="dashboard-table">
+
+        <thead>
+
+            <tr>
+                <th>#</th>
+                <th>Asset</th>
+                <th>Asset Type</th>
+                <th>Risk Score</th>
+                <th>Risk Level</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in top5_risk_asset %}
+
+            <tr>
+
+                <td>{{ loop.index }}</td>
+
+                <td>{{ item.asset }}</td>
+
+                <td class="source-column">{{ item.source }}</td>
+
+                <td>{{ item.risk_score }}</td>
+
+                <td>
+
+                    {% if item.risk_level == 'High' %}
+                        <span class="risk-badge high">
+                            High
+                        </span>
+
+                    {% elif item.risk_level == 'Medium' %}
+                        <span class="risk-badge medium">
+                            Medium
+                        </span>
+
+                    {% else %}
+                        <span class="risk-badge low">
+                            Low
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+</div>
+
+<div class="table-card">
+
+    <div class="table-header">
+        <h3 class="table-title">Top 5 Asset by Critical Vulnerability</h3>
+    </div>
+
+    <table class="dashboard-table">
+
+        <thead>
+
+            <tr>
+                <th>#</th>
+                <th>Asset</th>
+                <th>Source</th>
+                <th>Risk Score</th>
+                <th>Risk Level</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in top5_critical_asset %}
+
+            <tr>
+
+                <td>{{ loop.index }}</td>
+
+                <td>{{ item.asset }}</td>
+
+                <td>{{ item.critical }}</td>
+
+                <td>{{ item.high }}</td>
+
+                <td>
+
+                    {% if item.risk_level == 'High' %}
+                        <span class="risk-badge high">
+                            High
+                        </span>
+
+                    {% elif item.risk_level == 'Medium' %}
+                        <span class="risk-badge medium">
+                            Medium
+                        </span>
+
+                    {% else %}
+                        <span class="risk-badge low">
+                            Low
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="table-card">
+
+    <div class="table-header">
+        <h3 class="table-title">Vulnerability Severity by Asset</h3>
+    </div>
+
+        <div class="table-body">
+
+            <div class="severity-chart">
+
+                <canvas id="severityChart"></canvas>
+
+            </div>
+
+        </div>
+
+</div>
+
+</div>
+
+<div class="dashboard-footer">
+
+    <div class="dashboard-footer-info">
+
+        <div class="risk-info-title">
+            Risk Score Information
+        </div>
+
+        <div class="risk-info-formula">
+            Risk Score =
+            (Critical × 10) +
+            (High × 7) +
+            (Medium × 4) +
+            (Low × 2) +
+            (Info × 1)
+        </div>
+
+        <div class="risk-info-note">
+            Semakin tinggi nilai Risk Score,
+            semakin tinggi prioritas remediation.
+        </div>
+
+    </div>
+
+    <div class="dashboard-footer-bottom">
+
+        <span>
+            Vulnerability Assessment Reporting System
+        </span>
+
+        <span>
+            © 2026 IT Security Department
+        </span>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+
+document.querySelectorAll('[data-date-picker]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+        const input = document.getElementById(trigger.dataset.datePicker);
+        if (!input) return;
+
+        input.focus();
+        if (typeof input.showPicker === 'function') {
+            input.showPicker();
+        } else {
+            input.click();
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ctx = document.getElementById("riskChart");
+
+    if (!ctx) return;
+
+    const riskData = {{ risk_distribution | tojson | safe }};
+
+    const riskChart = new Chart(ctx, {
+
+        type: "doughnut",
+
+        data: {
+
+            labels: [
+                "High",
+                "Medium",
+                "Low"
+            ],
+
+            datasets: [{
+
+                data: [
+                    riskData.High || 0,
+                    riskData.Medium || 0,
+                    riskData.Low || 0
+                ],
+
+                backgroundColor: [
+                    "#ff4d4f",
+                    "#FFD700",
+                    "#52c41a"
+                ],
+
+                borderWidth: 0
+
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            cutout: "50%",
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    });
+
+    // ==========================
+    // CUSTOM LEGEND CLICK
+    // ==========================
+
+    document.querySelectorAll(".risk-item")
+    .forEach(item => {
+
+        item.addEventListener("click", function () {
+
+            const index =
+                parseInt(this.dataset.index);
+
+            const chart =
+                riskChart;
+
+            const dataset =
+                chart.data.datasets[0];
+
+            if(dataset.data[index] > 0){
+
+                this.dataset.original =
+                    dataset.data[index];
+
+                dataset.data[index] = 0;
+
+                this.classList.add("disabled");
+
+            }
+            else{
+
+                dataset.data[index] =
+                    parseInt(this.dataset.original);
+
+                this.classList.remove("disabled");
+
+            }
+
+            chart.update();
+
+        });
+
+    });
+
+});
+
+// =====================================
+// VULNERABILITY TREND
+// =====================================
+
+const trendCtx =
+    document.getElementById("trendChart");
+
+if(trendCtx){
+
+    const trendData =
+        {{ trend_data|tojson|safe }};
+
+    const labels =
+        trendData.map(x => x.scan_date);
+
+    const values =
+        trendData.map(x => x.total);
+
+    new Chart(trendCtx, {
+
+        type: "line",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [{
+
+                label: "Total Vulnerability",
+
+                data: values,
+
+                borderColor: "#FFD700",
+
+                backgroundColor: "#FFD700",
+
+                tension: 0.3,
+
+                fill: false
+
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    labels: {
+                        color: "#ffffff"
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    ticks: {
+                        color: "#ffffff"
+                    }
+
+                },
+
+                y: {
+
+                    ticks: {
+                        color: "#ffffff"
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+// ===============================
+// Asset Type Chart
+// ===============================
+
+const assetCtx =
+    document.getElementById("assetChart");
+
+if(assetCtx){
+
+    const assetData =
+        {{ asset_chart|tojson|safe }};
+
+    new Chart(assetCtx, {
+
+        type: "bar",
+
+        data: {
+
+            labels:
+                assetData.map(
+                    x => x.asset_type
+                ),
+
+            datasets: [{
+
+                label:
+                    "Total Vulnerability",
+
+                data:
+                    assetData.map(
+                        x => x.total
+                    ),
+
+                backgroundColor:
+                    "#FFD700"
+
+            }]
+        },
+
+        options: {
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins: {
+
+                legend: {
+
+                    display:false
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    ticks: {
+
+                        color:"#ffffff"
+
+                    }
+
+                },
+
+                y: {
+
+                    ticks: {
+
+                        color:"#ffffff"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+// ======================================
+// Vulnerability Severity By Asset
+// ======================================
+
+const severityCtx =
+    document.getElementById("severityChart");
+
+if(severityCtx){
+
+    const severityData =
+        {{ severity_chart|tojson|safe }};
+
+    new Chart(severityCtx, {
+
+        type: "bar",
+
+        data: {
+
+            labels:
+                severityData.map(
+                    x => x.asset
+                ),
+
+            datasets: [
+
+                {
+                    label:"Critical",
+                    data:
+                        severityData.map(
+                            x => x.critical
+                        ),
+                    backgroundColor:"#ff4d4f"
+                },
+
+                {
+                    label:"High",
+                    data:
+                        severityData.map(
+                            x => x.high
+                        ),
+                    backgroundColor:"#ff8c00"
+                },
+
+                {
+                    label:"Medium",
+                    data:
+                        severityData.map(
+                            x => x.medium
+                        ),
+                    backgroundColor:"#FFD700"
+                },
+
+                {
+                    label:"Low",
+                    data:
+                        severityData.map(
+                            x => x.low
+                        ),
+                    backgroundColor:"#52c41a"
+                },
+
+                {
+                    label:"Info",
+                    data:
+                        severityData.map(
+                            x => x.info
+                        ),
+                    backgroundColor:"#69b1ff"
+                }
+
+            ]
+        },
+
+        options: {
+
+            indexAxis:'y',
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            scales:{
+
+                x:{
+                    stacked:true,
+                    ticks:{
+                        color:"#ffffff"
+                    }
+                },
+
+                y:{
+                    stacked:true,
+                    ticks:{
+                        color:"#ffffff"
+                    }
+                }
+
+            },
+
+            plugins:{
+
+                legend:{
+                    labels:{
+                        color:"#ffffff"
+                    }
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

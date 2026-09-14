@@ -1,0 +1,48 @@
+/* Final responsive layer, deliberately loaded after every legacy stylesheet. */
+:root { --portal-content-max: 1540px; --portal-space: clamp(16px, 2.5vw, 34px); }
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+.app-wrapper { min-width: 0; }
+.main-content { min-width: 0; padding: var(--portal-space) !important; background: radial-gradient(circle at 85% 0%, rgba(244,200,74,.055), transparent 24rem); }
+.content-wrapper, .va-register-page, .pentest-register, .blackowl-profile-page, .ip-intelligence-page, .tech-page { width: 100%; max-width: var(--portal-content-max); margin-inline: auto; }
+
+.table-wrapper { position: relative; max-width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-color: rgba(244,200,74,.55) rgba(255,255,255,.04); scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.table-wrapper::-webkit-scrollbar { height: 8px; }.table-wrapper::-webkit-scrollbar-track { background: rgba(255,255,255,.035); border-radius: 99px; }.table-wrapper::-webkit-scrollbar-thumb { background: rgba(244,200,74,.52); border-radius: 99px; }
+.user-table, .table-modern { width: 100%; min-width: 860px; table-layout: auto; }
+.user-table th, .table-modern th { white-space: nowrap; }.user-table td, .table-modern td { overflow-wrap: anywhere; }
+.va-register-table { min-width: 940px; }.pentest-register-table { min-width: 1180px; }
+.pentest-register-table th:nth-child(1), .pentest-register-table td:nth-child(1) { min-width: 145px; }.pentest-register-table th:nth-child(2), .pentest-register-table td:nth-child(2) { min-width: 155px; }.pentest-register-table th:nth-child(6), .pentest-register-table td:nth-child(6),.pentest-register-table th:nth-child(7), .pentest-register-table td:nth-child(7) { min-width: 94px; white-space: nowrap; }
+
+.va-actions, .pentest-action-cell { min-width: 168px; }.va-actions, .pentest-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }.va-actions .btn-view, .va-actions .btn-edit, .va-actions .btn-delete,.pentest-actions .btn-view, .pentest-actions .btn-edit, .pentest-actions .btn-delete { display: inline-flex; align-items: center; justify-content: center; min-height: 32px; margin: 0; padding: 0 10px; border-radius: 8px; white-space: nowrap; }.va-delete-form, .pentest-delete-form { display: contents; margin: 0; }
+
+/* Table actions are a single compact control group, never a broken vertical
+   stack. Tables scroll horizontally when space is genuinely unavailable. */
+.va-register-table th:last-child, .va-register-table td.va-actions,
+.pentest-register-table th:last-child, .pentest-register-table td.pentest-action-cell { width: 214px; min-width: 214px; }
+.va-actions, .pentest-actions { flex-wrap: nowrap; width: max-content; min-width: max-content; gap: 6px; }
+.va-actions .btn-view, .va-actions .btn-edit, .va-actions .btn-delete,
+.pentest-actions .btn-view, .pentest-actions .btn-edit, .pentest-actions .btn-delete {
+  box-sizing: border-box; min-height: 34px; padding: 0 11px; border: 1px solid transparent;
+  border-radius: 8px; font-size: 11px; font-weight: 750; letter-spacing: .01em;
+  line-height: 1; text-decoration: none; transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+.va-actions .btn-view, .pentest-actions .btn-view { min-width: 57px; background: linear-gradient(135deg,#1597e8,#2878d4); box-shadow: 0 5px 13px rgba(33,150,243,.16); }
+.va-actions .btn-edit, .pentest-actions .btn-edit { min-width: 51px; color: #ffe694; border-color: rgba(244,200,74,.34); background: rgba(244,200,74,.10); }
+.va-actions .btn-delete, .pentest-actions .btn-delete { min-width: 66px; color: #ffd2d6; border-color: rgba(239,68,68,.36); background: rgba(190,37,52,.34); }
+.va-actions .btn-view:hover, .va-actions .btn-edit:hover, .va-actions .btn-delete:hover,
+.pentest-actions .btn-view:hover, .pentest-actions .btn-edit:hover, .pentest-actions .btn-delete:hover { transform: translateY(-1px); filter: brightness(1.12); }
+@media (max-width:760px) { .va-register-table th:last-child, .va-register-table td.va-actions, .pentest-register-table th:last-child, .pentest-register-table td.pentest-action-cell { width:214px; min-width:214px; } }
+
+.va-data-card, .content-box.pentest-register { overflow: hidden; }.va-register-header, .pentest-page-header { gap: 18px; }.pentest-summary-grid { gap: clamp(12px, 1.35vw, 18px); }.pentest-summary-card { min-width: 0; }.pentest-summary-card span, .pentest-summary-card small { overflow-wrap: anywhere; }.toolbar, .va-filter-button-group, .pentest-toolbar-actions, .toolbar-right { gap: 10px; }.toolbar-right .input-search { min-width: min(100%, 280px); }
+
+@media (max-width:1100px) { .pentest-summary-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }.toolbar { align-items:flex-start; flex-wrap:wrap; }.toolbar-right { width:100%; }.toolbar-right .input-search { flex:1 1 220px; width:auto; } }
+@media (max-width:760px) { .main-content { padding:68px 12px 20px !important; }.content-wrapper, .va-register-page, .pentest-register, .blackowl-profile-page, .ip-intelligence-page, .tech-page { max-width:none; }.section-header, .va-register-header, .pentest-page-header { align-items:flex-start; flex-direction:column; }.va-register-header>.btn-add-va, .pentest-page-header>a { width:100%; justify-content:center; }.pentest-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }.pentest-summary-card { min-height:112px; padding:14px; }.pentest-summary-card strong { font-size:clamp(26px,9vw,34px); }.toolbar, .toolbar-right, .pentest-toolbar-actions, .va-filter-button-group { align-items:stretch; flex-direction:column; width:100%; }.toolbar-right .input-search, .toolbar-right .btn-filter, .pentest-toolbar-actions>*, .va-filter-button-group>* { width:100%; }.table-wrapper { margin-inline:-1px; border-radius:10px; }.table-wrapper::before { content:"Geser tabel untuk melihat kolom lainnya"; display:block; padding:8px 12px; color:#8fa0b6; background:rgba(255,255,255,.025); font-size:10px; font-weight:700; letter-spacing:.04em; }.user-table, .table-modern { min-width:760px; }.va-data-card, .content-box.pentest-register { padding:15px; border-radius:14px; } }
+@media (max-width:992px) {
+  /* The backdrop must sit behind the navigation drawer. Previously its
+     z-index was higher than --z-sidebar, so it intercepted every tap. */
+  .app-nav-backdrop { z-index:1200 !important; touch-action:manipulation; }
+  .sidebar { z-index:1300 !important; pointer-events:auto; touch-action:pan-y manipulation; }
+  .app-nav-toggle { z-index:1400 !important; touch-action:manipulation; }
+  .sidebar a, .sidebar button { position:relative; z-index:1; touch-action:manipulation; }
+}
+@media (max-width:420px) { .main-content { padding-inline:9px !important; }.pentest-summary-grid { grid-template-columns:1fr; }.pentest-summary-card { min-height:96px; } }

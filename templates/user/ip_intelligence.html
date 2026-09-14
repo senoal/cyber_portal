@@ -1,0 +1,42 @@
+{% extends 'user/layout.html' %}
+
+{% block content %}
+<div class="content-wrapper ip-page">
+    <header class="ip-hero">
+        <div class="ip-hero-copy">
+            <span class="ip-eyebrow"><span></span> THREAT INTELLIGENCE</span>
+            <h1>IP <em>Intelligence</em></h1>
+            <p>Kelola daftar reputasi IP untuk pemantauan, validasi, dan pengambilan tindakan keamanan yang lebih terarah.</p>
+        </div>
+        <a href="{{ url_for('user.ip_add') }}" class="ip-primary-action"><span>+</span> Tambah IP</a>
+    </header>
+
+    <section class="ip-summary-grid" aria-label="Ringkasan IP Intelligence">
+        <article class="ip-summary-card"><span class="ip-summary-icon ip-summary-icon--blue">◎</span><div><span class="ip-summary-label">TOTAL RECORDS</span><strong>{{ total_ip }}</strong><p>IP tercatat di database reputasi</p></div></article>
+        <article class="ip-summary-card"><span class="ip-summary-icon ip-summary-icon--red">⊘</span><div><span class="ip-summary-label">ACTIVE BLOCK</span><strong class="ip-value-danger">{{ total_block }}</strong><p>Alamat IP dengan status Block</p></div></article>
+        <article class="ip-summary-card"><span class="ip-summary-icon ip-summary-icon--green">✓</span><div><span class="ip-summary-label">ALLOWED</span><strong class="ip-value-success">{{ total_allow }}</strong><p>Alamat IP dengan status Allow</p></div></article>
+    </section>
+
+    <section class="ip-workspace" aria-label="Kontrol IP Intelligence">
+        <form method="POST" action="{{ url_for('user.upload_ip') }}" enctype="multipart/form-data" class="ip-import-form">
+            <div class="ip-import-copy"><span class="ip-import-icon">↑</span><div><strong>Import daftar IP</strong><small>CSV, XLS, atau XLSX</small></div></div>
+            <label class="ip-file-picker"><input type="file" name="file" accept=".csv,.xlsx,.xls" required><span>Pilih file</span></label>
+            <button type="submit" class="ip-import-button">Import</button>
+        </form>
+        <form method="GET" action="{{ url_for('user.ip_intelligence') }}" class="ip-search-form">
+            <label class="ip-search-field"><span aria-hidden="true">⌕</span><input type="text" name="keyword" value="{{ keyword }}" placeholder="Cari IP address atau deskripsi"></label>
+            <button type="submit" class="ip-search-button">Cari</button>
+            {% if keyword %}<a href="{{ url_for('user.ip_intelligence') }}" class="ip-reset-button">Reset</a>{% endif %}
+        </form>
+    </section>
+
+    <section class="ip-table-panel">
+        <div class="ip-table-heading"><div><span class="ip-section-label">INTELLIGENCE DATABASE</span><h2>Daftar IP Reputation</h2></div><span class="ip-record-count">{{ total_ip }} records</span></div>
+        <div class="ip-table-scroll"><table class="ip-table"><thead><tr><th>ID</th><th>IP Address</th><th>Description</th><th>Status</th><th><span class="sr-only">Action</span></th></tr></thead><tbody>
+            {% for row in data %}<tr><td class="ip-id">#{{ row.id }}</td><td><code class="ip-address">{{ row.blacklisted_address }}</code></td><td class="ip-description">{{ row.description or '-' }}</td><td>{% if row.status == 'Block' %}<span class="ip-status ip-status--block"><i></i>Block</span>{% elif row.status == 'Monitor' %}<span class="ip-status ip-status--monitor"><i></i>Monitor</span>{% else %}<span class="ip-status ip-status--allow"><i></i>{{ row.status }}</span>{% endif %}</td><td class="ip-row-action"><a href="{{ url_for('user.ip_edit', ip_id=row.id) }}">Edit <span>→</span></a></td></tr>
+            {% else %}<tr><td colspan="5"><div class="ip-empty-state"><span>◌</span><h3>Belum ada data IP Intelligence</h3><p>Import file CSV/Excel atau tambahkan alamat IP secara manual.</p><a href="{{ url_for('user.ip_add') }}">Tambah IP pertama</a></div></td></tr>{% endfor %}
+        </tbody></table></div>
+        {% if total_pages > 1 %}<nav class="ip-pagination" aria-label="Pagination">{% if page > 1 %}<a href="{{ url_for('user.ip_intelligence', page=page-1, keyword=keyword) }}">← Sebelumnya</a>{% endif %}<span>Halaman <strong>{{ page }}</strong> dari {{ total_pages }}</span>{% if page < total_pages %}<a href="{{ url_for('user.ip_intelligence', page=page+1, keyword=keyword) }}">Berikutnya →</a>{% endif %}</nav>{% endif %}
+    </section>
+</div>
+{% endblock %}

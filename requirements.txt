@@ -1,0 +1,3 @@
+# Required by the Tech PDF-to-HTML converter (imported as `fitz`).
+PyMuPDF>=1.24,<2
+Pillow>=10,<12

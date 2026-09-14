@@ -1,0 +1,7 @@
+{% extends 'user/layout.html' %}
+{% block content %}
+<div class="content-wrapper ip-form-page">
+    <header class="ip-form-header"><a href="{{ url_for('user.ip_intelligence') }}">← Kembali ke IP Intelligence</a><span class="ip-eyebrow"><span></span> EDIT INTELLIGENCE RECORD</span><h1>Perbarui <em>IP Address</em></h1><p>Sesuaikan alamat, status, atau keterangan reputasi IP pada database pemantauan.</p></header>
+    <section class="ip-form-panel"><form method="POST" action="{{ url_for('user.ip_update', ip_id=ip.id) }}"><div class="ip-form-grid"><div class="form-group"><label for="blacklisted_address">IP Address</label><input id="blacklisted_address" type="text" name="blacklisted_address" value="{{ ip.blacklisted_address }}" required></div><div class="form-group"><label for="status">Security Status</label><select id="status" name="status"><option value="Block" {% if ip.status == 'Block' %}selected{% endif %}>Block</option><option value="Allow" {% if ip.status == 'Allow' %}selected{% endif %}>Allow</option></select></div><div class="form-group ip-form-full"><label for="description">Description <small>Optional</small></label><textarea id="description" name="description" rows="6">{{ ip.description or '' }}</textarea></div></div><div class="ip-form-actions"><a href="{{ url_for('user.ip_intelligence') }}" class="ip-cancel-button">Batal</a><button type="submit" class="ip-save-button">Simpan Perubahan <span>→</span></button></div></form></section>
+</div>
+{% endblock %}
