@@ -124,27 +124,43 @@ def create_app():
 
     @app.errorhandler(sqlite3.Error)
     def handle_database_connection_error(error):
-        """Keep database outages from exposing a Flask traceback to users."""
+        """Return a useful, safe message for SQLite failures.
+
+        This application uses SQLite locally.  A constraint or an active write
+        is not an outage, so do not collapse every SQLite exception into a
+        misleading SQL Server/database-unavailable alert.
+        """
+        current_app.logger.exception("SQLite request failure: %s", error)
+        reason = str(error).lower()
+        if "readonly" in reason:
+            message = "Database lokal bersifat read-only. Berikan izin Modify pada folder instance."
+            status = 500
+        elif "unable to open" in reason:
+            message = "File database lokal tidak dapat dibuka. Pastikan instance/sec_app.sqlite3 tersedia dan folder instance dapat ditulis."
+            status = 500
+        elif "locked" in reason or "busy" in reason:
+            message = "Database sedang memproses penyimpanan lain. Tunggu beberapa detik lalu coba simpan kembali."
+            status = 503
+        elif "no such table" in reason or "no such column" in reason:
+            message = "Struktur database lokal belum sesuai versi aplikasi. Jalankan pembaruan database lalu restart aplikasi."
+            status = 500
+        elif "unique constraint" in reason:
+            message = "Data tidak dapat disimpan karena sudah ada data lain dengan nilai yang harus unik."
+            status = 409
+        elif "foreign key constraint" in reason:
+            message = "Data tidak dapat disimpan karena data yang menjadi referensinya tidak ditemukan atau sudah dihapus."
+            status = 409
+        elif "not null constraint" in reason or "check constraint" in reason:
+            message = "Data tidak dapat disimpan karena ada isian yang tidak valid atau wajib belum lengkap."
+            status = 400
+        else:
+            message = "Data tidak dapat disimpan karena terjadi kesalahan pada database lokal. Administrator dapat melihat detailnya pada log server."
+            status = 500
         # JSON callers must never receive a redirect page: client-side Tasks
         # code expects an API response and can show this message to the user.
         if request.path.startswith("/api/"):
-            current_app.logger.exception("SQLite API failure: %s", error)
-            reason = str(error).lower()
-            if "readonly" in reason:
-                message = "Database SQLite bersifat read-only. Berikan izin Modify pada folder instance."
-            elif "unable to open" in reason:
-                message = "File database SQLite tidak dapat dibuka. Pastikan instance/sec_app.sqlite3 tersedia dan folder instance dapat ditulis."
-            elif "locked" in reason or "busy" in reason:
-                message = "Database SQLite sedang digunakan. Tunggu sebentar lalu coba simpan kembali."
-            elif "no such table" in reason:
-                message = "Struktur database Tasks belum tersedia. Deploy versi Tasks terbaru lalu restart aplikasi."
-            else:
-                message = "Task tidak dapat disimpan karena database SQLite lokal tidak tersedia."
-            return jsonify(error=message), 500
-        flash(
-            "Layanan database sedang tidak tersedia. Silakan periksa database lokal atau koneksi SQL Server.",
-            "error"
-        )
+            return jsonify(error=message), status
+        flash(message, "error")
         if session.get("user"):
             return redirect(url_for("user.dashboard"))
         return redirect(url_for("auth.login"))

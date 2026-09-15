@@ -8,7 +8,10 @@ from app.config import Config
 
 _sqlite_setup_lock = threading.Lock()
 _sqlite_wal_ready = set()
-_SQLITE_BUSY_TIMEOUT_MS = 2_000
+# SQLite allows one writer at a time.  A page submission may overlap with an
+# audit-log write or another user's save, so two seconds is unnecessarily
+# short and produces avoidable "database is locked" failures.
+_SQLITE_BUSY_TIMEOUT_MS = 10_000
 
 def is_sqlite():
     return True
@@ -87,8 +90,9 @@ class _SqliteConnection:
 def get_connection():
     path = Path(Config.SQLITE_PATH).resolve(); path.parent.mkdir(parents=True, exist_ok=True)
     # A web application can have a page request, audit write, and task save
-    # arrive almost together. SQLite permits one writer; wait briefly for it
-    # rather than failing the task save immediately with "database is locked".
+    # arrive almost together. SQLite permits one writer; wait for the active
+    # short transaction rather than failing the save immediately with
+    # "database is locked".
     conn = sqlite3.connect(str(path), timeout=_SQLITE_BUSY_TIMEOUT_MS / 1000)
     conn.row_factory = _row_factory
     conn.execute(f"PRAGMA busy_timeout = {_SQLITE_BUSY_TIMEOUT_MS}")
