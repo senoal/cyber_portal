@@ -11,6 +11,54 @@ def ensure_application_directory_tables():
     if _ready:
         return
     if is_sqlite():
+        # The application now runs on SQLite.  The old implementation skipped
+        # the SQL Server DDL in this branch, but did not create an equivalent
+        # local schema.  As a result, the add form could be displayed while
+        # its first save failed with "no such table".
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS application_directory (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    ip TEXT,
+                    purpose TEXT,
+                    access_info TEXT,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS application_directory_modules (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    application_id INTEGER NOT NULL,
+                    name TEXT NOT NULL,
+                    sort_order INTEGER NOT NULL,
+                    FOREIGN KEY (application_id) REFERENCES application_directory(id) ON DELETE CASCADE
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS application_directory_steps (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    module_id INTEGER NOT NULL,
+                    instruction TEXT NOT NULL,
+                    sort_order INTEGER NOT NULL,
+                    FOREIGN KEY (module_id) REFERENCES application_directory_modules(id) ON DELETE CASCADE
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS application_directory_step_images (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    step_id INTEGER NOT NULL,
+                    file_name TEXT NOT NULL,
+                    sort_order INTEGER NOT NULL,
+                    FOREIGN KEY (step_id) REFERENCES application_directory_steps(id) ON DELETE CASCADE
+                )
+            """)
+            conn.commit()
+        finally:
+            conn.close()
         _ready = True
         return
     conn = get_connection()
@@ -109,8 +157,13 @@ def save_application(data, application_id=None):
     removed_images = []
     try:
         if application_id is None:
-            cursor.execute("""INSERT INTO dbo.application_directory (name, ip, purpose, access_info)
-                              OUTPUT INSERTED.id VALUES (?, ?, ?, ?)""", (data["name"], data["ip"], data["purpose"], data["access_info"]))
+            # Existing local database snapshots have non-null timestamp
+            # columns without DEFAULT values.  Set them explicitly so adding
+            # an application works with both those snapshots and new ones.
+            cursor.execute("""INSERT INTO dbo.application_directory
+                              (name, ip, purpose, access_info, created_at, updated_at)
+                              OUTPUT INSERTED.id VALUES (?, ?, ?, ?, SYSDATETIME(), SYSDATETIME())""",
+                           (data["name"], data["ip"], data["purpose"], data["access_info"]))
             application_id = cursor.fetchone()[0]
         else:
             cursor.execute("""SELECT i.file_name FROM dbo.application_directory_step_images i

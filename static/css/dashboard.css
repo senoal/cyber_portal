@@ -1720,6 +1720,75 @@
 
 }
 
+/* VA dashboard layout is driven by the width actually available to the
+   content area. This stays correct when browser zoom changes the usable
+   space beside the sidebar. */
+.chart-grid{
+    grid-template-columns:repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+}
+
+/* Tables require considerably more horizontal room than the charts. Do not
+   squeeze three table cards into the row merely because the viewport is wide:
+   browser zoom and the sidebar reduce the usable content width independently. */
+.analysis-grid{
+    container-type:inline-size;
+    container-name:va-analysis;
+    grid-template-columns:repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+}
+
+/* With two table columns, let the severity visualisation use the entire next
+   row. This keeps chart labels and its legend readable at every zoom level. */
+@container va-analysis (max-width:1487px){
+    .analysis-grid > .table-card:last-child{
+        grid-column:1 / -1;
+    }
+}
+
+.chart-card,
+.table-card{
+    height:clamp(360px, 30vw, 420px);
+    min-width:0;
+}
+
+.table-card:has(.severity-chart){
+    min-width:min(100%, 420px);
+}
+
+.dashboard-table-scroll{
+    flex:1;
+    min-height:0;
+    max-width:100%;
+    overflow:auto;
+    scrollbar-color:rgba(244,200,74,.55) transparent;
+    scrollbar-width:thin;
+}
+
+.dashboard-table-scroll::-webkit-scrollbar{
+    width:7px;
+    height:7px;
+}
+
+.dashboard-table-scroll::-webkit-scrollbar-thumb{
+    background:rgba(244,200,74,.55);
+    border-radius:999px;
+}
+
+.dashboard-table-scroll .dashboard-table{
+    min-width:510px;
+}
+
+@media(max-width:767px){
+    .chart-grid,
+    .analysis-grid{
+        grid-template-columns:1fr;
+    }
+
+    .chart-card,
+    .table-card{
+        height:clamp(340px, 100vw, 400px);
+    }
+}
+
 
 /* ==========================================================
    FILTER RESPONSIVE
