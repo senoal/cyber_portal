@@ -4,3 +4,5 @@ production.env
 *.production.env
 instance/*.sqlite3
 instance/*.sqlite3-*
+data/pentest_advisory/*.db-wal
+data/pentest_advisory/*.db-shm

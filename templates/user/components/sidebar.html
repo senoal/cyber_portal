@@ -85,11 +85,14 @@
         </li>
         {% endif %}
 
+        {% set pentest_active = request.path.startswith('/user/pentest') %}
         {% if 'pentest' in session.get('menu_access', []) %}
-        <li class="{% if request.path.startswith('/user/pentest') %}active{% endif %}">
-            <a href="{{ url_for('user.pentest') }}">
-                <span>Pentest</span>
-            </a>
+        <li class="menu-group {% if pentest_active %}active{% endif %}">
+            <button class="menu-group-label" type="button" aria-expanded="{{ 'true' if pentest_active else 'false' }}" aria-controls="pentest-submenu">Pentest <b>{% if pentest_active %}−{% else %}+{% endif %}</b></button>
+            <ul id="pentest-submenu" class="menu-submenu {% if pentest_active %}is-open{% endif %}" {% if not pentest_active %}hidden{% endif %}>
+                <li class="{% if request.endpoint and request.endpoint.startswith('user.') and request.path.startswith('/user/pentest') %}active{% endif %}"><a href="{{ url_for('user.pentest') }}"><span>Pentest Register</span></a></li>
+                <li class="{% if request.endpoint and request.endpoint.startswith('pentest_advisory.') %}active{% endif %}"><a href="{{ url_for('pentest_advisory.spa') }}"><span>Security Advisory Builder</span></a></li>
+            </ul>
         </li>
         {% endif %}
 

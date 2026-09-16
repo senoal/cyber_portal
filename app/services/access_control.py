@@ -44,6 +44,8 @@ def menu_for_endpoint(endpoint):
         return "application_directory"
     if endpoint and endpoint.startswith("tasks."):
         return "tasks"
+    if endpoint and endpoint.startswith(("pentest_advisory.", "pentest_advisory_assets.")):
+        return "pentest"
     if endpoint and endpoint.startswith("user.profile_blackowl"):
         return "organization"
     if endpoint and endpoint.startswith("user."):

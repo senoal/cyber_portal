@@ -14,6 +14,8 @@ auth_bp = Blueprint("auth", __name__)
 # =========================
 @auth_bp.route("/", methods=["GET", "POST"])
 def login():
+    if request.method == "GET" and request.args.get("document") and session.get("user_id"):
+        return redirect(url_for("pentest_advisory.spa", document=request.args["document"]))
     if request.method == "POST":
         username = request.form["username"].strip()
         password = request.form["password"]

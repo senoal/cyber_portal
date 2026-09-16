@@ -11,6 +11,11 @@ from app.routes.va_routes import va_bp
 from app.routes.pdf_routes import pdf_bp
 from app.routes.application_directory_routes import application_directory_bp
 from app.routes.tasks_routes import tasks_bp
+from app.routes.pentest_advisory_routes import (
+    pentest_advisory_assets_bp,
+    pentest_advisory_bp,
+    initialise_advisory_database,
+)
 from app.services.access_control import landing_endpoint, menu_for_endpoint
 from app.services.audit_log import begin_request, write_response_audit
 from app.services.csrf import csrf_token, validate_csrf_request
@@ -18,7 +23,7 @@ from app.models.user_model import get_current_menu_access, get_user_auth_state
 from app.models.settings_model import get_session_idle_timeout_minutes
 
 
-USER_PORTAL_ENDPOINT_PREFIXES = ("user.", "va.", "pdf_bp.", "application_directory.", "tasks.")
+USER_PORTAL_ENDPOINT_PREFIXES = ("user.", "va.", "pdf_bp.", "application_directory.", "tasks.", "pentest_advisory.", "pentest_advisory_assets.")
 
 
 def is_user_portal_endpoint(endpoint):
@@ -43,6 +48,9 @@ def create_app():
     app.register_blueprint(pdf_bp)
     app.register_blueprint(application_directory_bp)
     app.register_blueprint(tasks_bp)
+    app.register_blueprint(pentest_advisory_bp)
+    app.register_blueprint(pentest_advisory_assets_bp)
+    initialise_advisory_database()
 
     @app.context_processor
     def inject_csrf_token():
@@ -115,6 +123,12 @@ def create_app():
     @app.after_request
     def record_activity(response):
         write_response_audit(response)
+        # Portal pages contain authorization-aware navigation. They must not be
+        # restored from an older browser cache after a deployment or after an
+        # administrator changes a user's menu access.
+        if is_user_portal_endpoint(request.endpoint):
+            response.headers["Cache-Control"] = "no-store, max-age=0"
+            response.headers["Pragma"] = "no-cache"
         # A cached login form contains a CSRF token tied to an earlier signed
         # session. Mobile browsers are especially aggressive about restoring
         # such pages after app/server restarts, causing an avoidable 400.
