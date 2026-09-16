@@ -1,9 +1,13 @@
-"""Database factory. SQLite is used locally; MSSQL remains deployment-only."""
+"""Database factory for SQLite rollback snapshots and Microsoft SQL Server."""
 import re
 import sqlite3
 import threading
 from pathlib import Path
 from app.config import Config
+
+
+def _mssql_enabled():
+    return Config.DATABASE_ENGINE == "mssql"
 
 
 _sqlite_setup_lock = threading.Lock()
@@ -14,7 +18,7 @@ _sqlite_wal_ready = set()
 _SQLITE_BUSY_TIMEOUT_MS = 10_000
 
 def is_sqlite():
-    return True
+    return not _mssql_enabled()
 
 class _AttrRow(tuple):
     """Row supporting the tuple and attribute access used by the models."""
@@ -87,7 +91,66 @@ class _SqliteConnection:
     def cursor(self): return _SqliteCursor(self._conn.cursor())
     def __getattr__(self, name): return getattr(self._conn, name)
 
+
+class _MssqlCursor:
+    """Provide the tuple-and-attribute row interface expected by the models."""
+    def __init__(self, cursor):
+        self._cursor = cursor
+        self._names = []
+
+    def execute(self, sql, params=()):
+        if params is not None and not isinstance(params, (tuple, list)):
+            params = (params,)
+        # Existing models use the ODBC ``?`` parameter marker; pymssql uses
+        # ``%s``. SQL syntax otherwise remains native SQL Server.
+        self._cursor.execute(sql.replace("?", "%s"), tuple(params or ()))
+        self._names = [item[0] for item in (self._cursor.description or [])]
+        return self
+
+    def executemany(self, sql, params):
+        self._cursor.executemany(sql.replace("?", "%s"), params)
+        self._names = [item[0] for item in (self._cursor.description or [])]
+        return self
+
+    def _adapt(self, row):
+        return None if row is None else _AttrRow(row, self._names)
+
+    def fetchone(self): return self._adapt(self._cursor.fetchone())
+    def fetchall(self): return [self._adapt(row) for row in self._cursor.fetchall()]
+    @property
+    def description(self): return self._cursor.description
+    @property
+    def rowcount(self): return self._cursor.rowcount
+    def __getattr__(self, name): return getattr(self._cursor, name)
+
+
+class _MssqlConnection:
+    def __init__(self, conn): self._conn = conn
+    def cursor(self): return _MssqlCursor(self._conn.cursor())
+    def __getattr__(self, name): return getattr(self._conn, name)
+
+
+def _get_mssql_connection():
+    if not all((Config.MSSQL_SERVER, Config.MSSQL_DATABASE, Config.MSSQL_UID, Config.MSSQL_PASSWORD)):
+        raise RuntimeError("Konfigurasi MSSQL belum lengkap. Atur SEC_APP_DB_SERVER, _DATABASE, _UID, dan _PASSWORD.")
+    try:
+        import pymssql
+    except ImportError as error:
+        raise RuntimeError("Dependensi pymssql belum terpasang untuk koneksi MSSQL.") from error
+    return _MssqlConnection(pymssql.connect(
+        server=Config.MSSQL_SERVER,
+        port=Config.MSSQL_PORT,
+        user=Config.MSSQL_UID,
+        password=Config.MSSQL_PASSWORD,
+        database=Config.MSSQL_DATABASE,
+        login_timeout=15,
+        timeout=30,
+        charset="UTF-8",
+    ))
+
 def get_connection():
+    if _mssql_enabled():
+        return _get_mssql_connection()
     path = Path(Config.SQLITE_PATH).resolve(); path.parent.mkdir(parents=True, exist_ok=True)
     # A web application can have a page request, audit write, and task save
     # arrive almost together. SQLite permits one writer; wait for the active

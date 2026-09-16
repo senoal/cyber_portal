@@ -4,6 +4,31 @@ from datetime import timedelta
 from pathlib import Path
 
 
+def _load_project_environment():
+    """Load local deployment values without overriding a service environment.
+
+    ``production.env`` is intentionally gitignored. It supports a portable
+    copy-and-run deployment while allowing a Windows service environment or a
+    secret manager to take precedence later.
+    """
+    env_path = Path(__file__).resolve().parent.parent / "production.env"
+    try:
+        lines = env_path.read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError:
+        return
+    for raw_line in lines:
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if key.startswith("SEC_APP_"):
+            os.environ.setdefault(key, value.strip())
+
+
+_load_project_environment()
+
+
 def _as_bool(value, default=False):
     return str(value if value is not None else default).strip().lower() in {"1", "true", "yes", "on"}
 
@@ -70,7 +95,14 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(seconds=SESSION_IDLE_TIMEOUT_SECONDS)
     SESSION_REFRESH_EACH_REQUEST = True
 
-    # SEC_APP is SQLite-only. Its database is a local file outside static URLs.
+    # SQL Server is the primary backend. SQLite is used only when explicitly
+    # requested for an offline rollback or local snapshot investigation.
+    DATABASE_ENGINE = os.getenv("SEC_APP_DATABASE_ENGINE", "mssql").strip().lower()
     SQLITE_PATH = os.getenv(
         "SEC_APP_SQLITE_PATH", str(Path(__file__).resolve().parent.parent / "instance" / "sec_app.sqlite3")
     )
+    MSSQL_SERVER = os.getenv("SEC_APP_DB_SERVER", "")
+    MSSQL_DATABASE = os.getenv("SEC_APP_DB_DATABASE", "")
+    MSSQL_UID = os.getenv("SEC_APP_DB_UID", "")
+    MSSQL_PASSWORD = os.getenv("SEC_APP_DB_PASSWORD", "")
+    MSSQL_PORT = int(os.getenv("SEC_APP_DB_PORT", "1433"))

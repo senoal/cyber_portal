@@ -1,5 +1,6 @@
 import sqlite3
 import time
+import pymssql
 from datetime import timedelta
 from flask import Flask, current_app, flash, jsonify, redirect, request, session, url_for
 from app.config import Config
@@ -123,26 +124,26 @@ def create_app():
         return response
 
     @app.errorhandler(sqlite3.Error)
+    @app.errorhandler(pymssql.Error)
     def handle_database_connection_error(error):
-        """Return a useful, safe message for SQLite failures.
+        """Return a useful, safe message for database failures.
 
-        This application uses SQLite locally.  A constraint or an active write
-        is not an outage, so do not collapse every SQLite exception into a
-        misleading SQL Server/database-unavailable alert.
+        Constraint errors are handled separately from unavailable database
+        connections so callers receive a useful response in either backend.
         """
-        current_app.logger.exception("SQLite request failure: %s", error)
+        current_app.logger.exception("Database request failure: %s", error)
         reason = str(error).lower()
         if "readonly" in reason:
             message = "Database lokal bersifat read-only. Berikan izin Modify pada folder instance."
             status = 500
         elif "unable to open" in reason:
-            message = "File database lokal tidak dapat dibuka. Pastikan instance/sec_app.sqlite3 tersedia dan folder instance dapat ditulis."
+            message = "Database tidak dapat dibuka. Periksa konfigurasi koneksi dan izin akun database."
             status = 500
         elif "locked" in reason or "busy" in reason:
             message = "Database sedang memproses penyimpanan lain. Tunggu beberapa detik lalu coba simpan kembali."
             status = 503
         elif "no such table" in reason or "no such column" in reason:
-            message = "Struktur database lokal belum sesuai versi aplikasi. Jalankan pembaruan database lalu restart aplikasi."
+            message = "Struktur database belum sesuai versi aplikasi. Jalankan pembaruan database lalu restart aplikasi."
             status = 500
         elif "unique constraint" in reason:
             message = "Data tidak dapat disimpan karena sudah ada data lain dengan nilai yang harus unik."
@@ -154,7 +155,7 @@ def create_app():
             message = "Data tidak dapat disimpan karena ada isian yang tidak valid atau wajib belum lengkap."
             status = 400
         else:
-            message = "Data tidak dapat disimpan karena terjadi kesalahan pada database lokal. Administrator dapat melihat detailnya pada log server."
+            message = "Data tidak dapat disimpan karena terjadi kesalahan pada database. Administrator dapat melihat detailnya pada log server."
             status = 500
         # JSON callers must never receive a redirect page: client-side Tasks
         # code expects an API response and can show this message to the user.

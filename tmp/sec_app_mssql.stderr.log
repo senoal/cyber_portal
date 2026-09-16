@@ -1,0 +1,63 @@
+C:\Users\22931567\AppData\Local\anaconda3\Lib\site-packages\pandas\core\computation\expressions.py:23: UserWarning: Pandas requires version '2.10.2' or newer of 'numexpr' (version '2.8.7' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+C:\Users\22931567\AppData\Local\anaconda3\Lib\site-packages\pandas\core\arrays\masked.py:56: UserWarning: Pandas requires version '1.4.2' or newer of 'bottleneck' (version '1.3.7' currently installed).
+  from pandas.core import (
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.48.151:5000
+Press CTRL+C to quit
+127.0.0.1 - - [16/Sep/2026 10:17:14] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:20] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:20] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:20] "GET /static/login.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:20] "GET /static/logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:26] "POST / HTTP/1.1" 302 -
+127.0.0.1 - - [16/Sep/2026 10:34:30] "GET /user/va_analysis HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:30] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:30] "GET /static/css/responsive-premium.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:30] "GET /static/css/user.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:30] "GET /static/css/application_directory.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:30] "GET /static/logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/base.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/components.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/variables.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/sidebar.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/layout.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/dashboard.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:31] "GET /static/css/utilities.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /user/tasks HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/responsive-premium.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/application_directory.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/user.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/tasks/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/tasks/readability.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/tasks/notes-ui.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/tasks/portal-overrides.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/layout.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/base.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/variables.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:38] "GET /static/css/sidebar.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:39] "GET /static/css/utilities.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:39] "GET /static/css/components.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:39] "GET /static/css/dashboard.css HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:39] "GET /static/logo.png HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:39] "GET /static/tasks/tasks-ui.js HTTP/1.1" 304 -
+127.0.0.1 - - [16/Sep/2026 10:34:41] "GET /api/stats?status=all HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:42] "GET /api/tasks?status=all&page=1 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:47] "GET /api/stats?status=active HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:47] "GET /api/tasks?status=active&page=1 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:50] "GET /api/stats?status=active HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:50] "GET /api/tasks?status=active&page=1 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:34:57] "GET /api/tasks/12 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:03] "GET /api/tasks/12 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:05] "GET /api/tasks/12 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:18] "POST /api/tasks/12/subtasks HTTP/1.1" 201 -
+127.0.0.1 - - [16/Sep/2026 10:35:20] "GET /api/stats?status=active HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:21] "GET /api/tasks?status=active&page=1 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:23] "GET /api/tasks/12 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:24] "GET /api/tasks/12 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:27] "PATCH /api/tasks/12 HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:29] "GET /api/stats?status=active HTTP/1.1" 200 -
+127.0.0.1 - - [16/Sep/2026 10:35:29] "GET /api/tasks?status=active&page=1 HTTP/1.1" 200 -

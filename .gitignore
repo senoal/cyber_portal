@@ -1,4 +1,6 @@
 # Per-deployment secret created automatically when SEC_APP_SECRET_KEY is not set.
 .sec_app_session_secret
+production.env
+*.production.env
 instance/*.sqlite3
 instance/*.sqlite3-*

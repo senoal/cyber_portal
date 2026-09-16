@@ -1,16 +1,23 @@
-"""Minimal local SQLite health check; never contacts a database server."""
-import sqlite3
+"""Health check for the database backend selected by SEC_APP configuration."""
 
-from app.config import Config
+from app.database.db import get_connection, is_sqlite
 
 def test_connection():
     try:
-        with sqlite3.connect(Config.SQLITE_PATH) as conn:
-            version = conn.execute("SELECT sqlite_version()").fetchone()[0]
-            integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
-        print(f"SQLite {version}; integrity={integrity}")
-    except sqlite3.Error as error:
-        print(f"SQLite tidak tersedia: {error}")
+        conn = get_connection()
+        cursor = conn.cursor()
+        if is_sqlite():
+            cursor.execute("SELECT sqlite_version()")
+            version = cursor.fetchone()[0]
+            cursor.execute("PRAGMA integrity_check")
+            print(f"SQLite {version}; integrity={cursor.fetchone()[0]}")
+        else:
+            cursor.execute("SELECT DB_NAME(), CAST(SERVERPROPERTY('ProductVersion') AS varchar(128))")
+            database, version = cursor.fetchone()
+            print(f"MSSQL database={database}; version={version}")
+        conn.close()
+    except Exception as error:
+        print(f"Database tidak tersedia: {error}")
 
 if __name__ == "__main__":
     test_connection()

@@ -84,6 +84,20 @@ def ensure_audit_table():
         return
     conn = get_connection()
     cursor = conn.cursor()
+    # Normal runtime accounts need only read/write access. Do not submit a
+    # batch containing CREATE TABLE on every process startup when the central
+    # audit tables already exist, because SQL Server can require DDL rights
+    # even though the IF branch is not taken.
+    cursor.execute("""
+        SELECT t.name
+        FROM sys.tables t
+        JOIN sys.schemas s ON s.schema_id = t.schema_id
+        WHERE s.name = 'dbo' AND t.name IN ('activity_logs', 'activity_log_exports')
+    """)
+    if {row[0] for row in cursor.fetchall()} == {"activity_logs", "activity_log_exports"}:
+        conn.close()
+        _table_ready = True
+        return
     cursor.execute("""
         IF OBJECT_ID('dbo.activity_logs', 'U') IS NULL
         BEGIN

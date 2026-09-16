@@ -1,3 +1,17 @@
-# Required by the Tech PDF-to-HTML converter (imported as `fitz`).
+# Web application and production WSGI server.
+Flask>=3.0,<4
+waitress>=3.0,<4
+
+# Microsoft SQL Server runtime driver.
+pymssql>=2.3,<3
+
+# Data, reports, and file-processing features.
+pandas>=2.2,<3
+openpyxl>=3.1,<4
+matplotlib>=3.8,<4
+reportlab>=4.0,<5
 PyMuPDF>=1.24,<2
+pypdf>=5.0,<6
 Pillow>=10,<12
+pytesseract>=0.3,<1
+playwright>=1.48,<2
